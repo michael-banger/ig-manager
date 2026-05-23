@@ -412,12 +412,17 @@ function parsePost(p) {
 // ─────────────────────────────────────────────────────────────────────────────
 // LOAD DATA
 // ─────────────────────────────────────────────────────────────────────────────
-async function loadAccounts() {
-  const data = await notion('/v1/databases/' + DB.accounts + '/query', 'POST', {
-    sorts: [{ property: 'Nom', direction: 'ascending' }],
-    page_size: 100,
-  });
-  S.accounts = data.results.map(parseAccount);
+function loadAccounts() {
+  S.accounts = [
+    { id:'369c3402-aa15-8172-b9df-c7ae4c82c4b8', nom:'Tea Brand FR',           produit:'Infuseur à thé',        statut:'Dormant',        followers:'5k+',  format:['PR'],           hashtags:'#gift #tea #cadeau #teatime #maison #pause',           telephone:'iPhone 15', frequence:'1-2/jour',  notes:'' },
+    { id:'369c3402-aa15-81fe-87cf-c75d2c14f94c', nom:'Car Fan Brand FR',        produit:'Resin lamps voitures',  statut:'3-5 ventes/mois',followers:'3k+',  format:['RP','MX'],      hashtags:'#car #voiture #decoration #racing #f1',                telephone:'iPhone 15', frequence:'1/jour',    notes:'' },
+    { id:'369c3402-aa15-8197-93b3-cd8291614615', nom:'US Whisky-US',             produit:'Cocktail smoker',       statut:'Dormant',        followers:'45k+', format:['RP','PR','MX'], hashtags:'#whiskey #drinks #cocktails #gifts #cocktaillovers',   telephone:'iPhone 16', frequence:'1/jour',    notes:'' },
+    { id:'369c3402-aa15-8119-b460-f3bb3f151c3d', nom:'Ear Cleaner FR',           produit:'Ear cleaner',           statut:'Dormant',        followers:'3k+',  format:['MX','PR'],      hashtags:'#ear #oreille #lavage #routine #douche',               telephone:'iPhone 15', frequence:'1/jour',    notes:'' },
+    { id:'369c3402-aa15-8116-b0a9-da85b9fde105', nom:'Handbag AI Founder FR',    produit:'Sac à main AI founder', statut:'Actif',          followers:'1k+',  format:['PR','MX'],      hashtags:'#faitmain #handmade #artisan #sac #bag',               telephone:'iPhone 15', frequence:'1-2/jour',  notes:'' },
+    { id:'369c3402-aa15-817d-a11e-daac8e5716dc', nom:'iPhone 11 Art IA #1',      produit:'TBD',                   statut:'Jamais primé',   followers:'0',    format:['PR'],           hashtags:'',                                                     telephone:'iPhone 11', frequence:'1-2/jour',  notes:'' },
+    { id:'369c3402-aa15-81f7-9644-d98befffc8eb', nom:'iPhone 11 Art IA #2',      produit:'TBD',                   statut:'Non primé',      followers:'~100', format:['MX','PR'],      hashtags:'',                                                     telephone:'iPhone 11', frequence:'1-2/jour',  notes:'' },
+    { id:'369c3402-aa15-8194-81ef-dbf4c238ee5d', nom:'US Museum / Resin Art-US', produit:'Resin art lamps',       statut:'Warm-up',        followers:'Nouveau', format:['RP','PR'],   hashtags:'#resinart #resinlamp #handmade #animelamp #nba #lotr', telephone:'À préciser',frequence:'1/jour',    notes:'' },
+  ];
   updateHeaderSub();
 }
 
@@ -838,7 +843,8 @@ async function generateHashtags(accountId, nom, produit) {
     await notion('/v1/pages/' + accountId, 'PATCH', {
       properties: { Hashtags: { rich_text: [{ text: { content: str } }] } }
     });
-    await loadAccounts();
+    const acct = S.accounts.find(a => a.id === accountId);
+    if (acct) acct.hashtags = str;
     renderAccounts();
     toast('Hashtags generated ✓');
   } catch (e) {
@@ -955,10 +961,8 @@ async function changeDate(delta) {
 async function refreshAll() {
   toast('Refreshing…');
   try {
-    await Promise.all([
-      loadAccounts(),
-      loadPostsForDate(S.currentDate),
-    ]);
+    loadAccounts();
+    await loadPostsForDate(S.currentDate);
     renderAccounts();
     if (S.activeTab === 'content') renderContent();
     toast('Up to date ✓');
@@ -1025,10 +1029,8 @@ async function init() {
   showAppScreen();
 
   try {
-    await Promise.all([
-      loadAccounts(),
-      loadPostsForDate(S.currentDate),
-    ]);
+    loadAccounts();
+    await loadPostsForDate(S.currentDate);
     renderAccounts();
   } catch (e) {
     document.getElementById('tab-accounts').innerHTML = `
