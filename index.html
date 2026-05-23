@@ -305,7 +305,7 @@ const DB = {
   accounts: 'a783ba9a8ec14ff5b127cb84a17788f8',
   posts:    'c6516213feb34049950edfcc5d50b8e5',
 };
-const APP_VERSION = '2026-05-23-2245';
+const APP_VERSION = '2026-05-23-2252';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STORAGE
@@ -706,10 +706,11 @@ function categoryEmoji(cat) {
 function renderPostCard(p) {
   const sClass  = p.status === 'Validated' ? 'validated' : p.status === 'Posted' ? 'posted' : 'pending';
   const pClass  = p.status === 'Validated' ? 'psp-validated' : p.status === 'Posted' ? 'psp-posted' : 'psp-pending';
+  const descFull = (p.description || '') + (p.hashtags ? '\n' + p.hashtags : '');
 
   let actions = '';
   if (p.hook)          actions += `<button class="copy-btn" onclick="copyText(${JSON.stringify(p.hook)},this)">⧉ Hook</button>`;
-  if (p.description)   actions += `<button class="copy-btn description" onclick="copyText(${JSON.stringify(p.description)},this)">⧉ Desc</button>`;
+  if (descFull.trim()) actions += `<button class="copy-btn description" onclick="copyText(${JSON.stringify(descFull)},this)">⧉ Desc+#</button>`;
   if (p.hashtags)      actions += `<button class="copy-btn hashtags" onclick="copyText(${JSON.stringify(p.hashtags)},this)">⧉ #Tags</button>`;
   if (p.status === 'Pending') actions += `<button class="validate-btn" onclick="doValidate('${p.id}',this)">✓ Validate</button>`;
   actions += `<button class="dl-btn" onclick="doDownload('${p.id}',${JSON.stringify(p.videoUrl||'')},this)">↓ Video</button>`;
