@@ -211,6 +211,15 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .settings-panel input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);padding:9px 12px;color:var(--text);font-size:13px;margin-bottom:12px;font-family:inherit}
 .settings-panel input:focus{outline:none;border-color:var(--accent)}
 
+/* Filter bar */
+.filter-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--accent-dim);border:1px solid rgba(59,130,246,.2);border-radius:8px;margin-bottom:12px}
+.filter-clear{font-size:11px;font-weight:500;color:var(--muted);background:transparent;border:1px solid var(--border2);border-radius:6px;padding:3px 8px;cursor:pointer}
+.filter-clear:hover{color:var(--text)}
+
+/* Pull-to-refresh */
+#ptr{position:fixed;top:0;left:50%;transform:translateX(-50%) translateY(-40px);background:var(--accent);color:#fff;font-size:12px;font-weight:600;padding:6px 14px;border-radius:0 0 8px 8px;z-index:300;transition:transform .25s;pointer-events:none}
+#ptr.show{transform:translateX(-50%) translateY(0)}
+
 /* Responsive */
 @media(max-width:500px){
   .header{padding:12px 14px}
@@ -297,6 +306,9 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <!-- ── TOAST ── -->
 <div id="toast"></div>
 
+<!-- ── PULL-TO-REFRESH ── -->
+<div id="ptr">↻ Refreshing…</div>
+
 <script>
 // ─────────────────────────────────────────────────────────────────────────────
 // CONSTANTS
@@ -305,7 +317,7 @@ const DB = {
   accounts: 'a783ba9a8ec14ff5b127cb84a17788f8',
   posts:    'c6516213feb34049950edfcc5d50b8e5',
 };
-const APP_VERSION = '2026-05-23-2252';
+const APP_VERSION = '2026-05-24-v1';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STORAGE
@@ -323,8 +335,13 @@ const S = {
   todayCounts: {},
   currentDate: new Date().toISOString().slice(0, 10),
   activeTab: 'accounts',
+  accountFilter: null,
   demo: false,
 };
+
+// Clip buffer: avoids HTML-attribute escaping issues with quotes/special chars in post text
+// Keys: "postId:hook" | "postId:desc" | "postId:tags" | "postId:vid"
+const _clips = {};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // NOTION API
@@ -417,15 +434,27 @@ function parsePost(p) {
 // ─────────────────────────────────────────────────────────────────────────────
 function loadAccounts() {
   S.accounts = [
-    { id:'369c3402-aa15-8172-b9df-c7ae4c82c4b8', nom:'Tea Brand FR',           produit:'Infuseur à thé',        statut:'Dormant',        followers:'5k+',  format:['PR'],           hashtags:'#gift #tea #cadeau #teatime #maison #pause',           telephone:'iPhone 15', frequence:'1-2/jour',  notes:'' },
-    { id:'369c3402-aa15-81fe-87cf-c75d2c14f94c', nom:'Car Fan Brand FR',        produit:'Resin lamps voitures',  statut:'3-5 ventes/mois',followers:'3k+',  format:['RP','MX'],      hashtags:'#car #voiture #decoration #racing #f1',                telephone:'iPhone 15', frequence:'1/jour',    notes:'' },
-    { id:'369c3402-aa15-8197-93b3-cd8291614615', nom:'US Whisky-US',             produit:'Cocktail smoker',       statut:'Dormant',        followers:'45k+', format:['RP','PR','MX'], hashtags:'#whiskey #drinks #cocktails #gifts #cocktaillovers',   telephone:'iPhone 16', frequence:'1/jour',    notes:'' },
-    { id:'369c3402-aa15-8119-b460-f3bb3f151c3d', nom:'Ear Cleaner FR',           produit:'Ear cleaner',           statut:'Dormant',        followers:'3k+',  format:['MX','PR'],      hashtags:'#ear #oreille #lavage #routine #douche',               telephone:'iPhone 15', frequence:'1/jour',    notes:'' },
-    { id:'369c3402-aa15-8116-b0a9-da85b9fde105', nom:'Handbag AI Founder FR',    produit:'Sac à main AI founder', statut:'Actif',          followers:'1k+',  format:['PR','MX'],      hashtags:'#faitmain #handmade #artisan #sac #bag',               telephone:'iPhone 15', frequence:'1-2/jour',  notes:'' },
-    { id:'369c3402-aa15-817d-a11e-daac8e5716dc', nom:'iPhone 11 Art IA #1',      produit:'TBD',                   statut:'Jamais primé',   followers:'0',    format:['PR'],           hashtags:'',                                                     telephone:'iPhone 11', frequence:'1-2/jour',  notes:'' },
-    { id:'369c3402-aa15-81f7-9644-d98befffc8eb', nom:'iPhone 11 Art IA #2',      produit:'TBD',                   statut:'Non primé',      followers:'~100', format:['MX','PR'],      hashtags:'',                                                     telephone:'iPhone 11', frequence:'1-2/jour',  notes:'' },
-    { id:'369c3402-aa15-8194-81ef-dbf4c238ee5d', nom:'US Museum / Resin Art-US', produit:'Resin art lamps',       statut:'Warm-up',        followers:'Nouveau', format:['RP','PR'],   hashtags:'#resinart #resinlamp #handmade #animelamp #nba #lotr', telephone:'À préciser',frequence:'1/jour',    notes:'' },
+    // ── Active / existing accounts ──────────────────────────────────────────
+    { id:'369c3402-aa15-8172-b9df-c7ae4c82c4b8', nom:'Tea Brand FR',           produit:'Infuseur à thé',        statut:'Dormant',        followers:'5k+',     format:['PR'],           hashtags:'#gift #tea #cadeau #teatime #maison #pause',           telephone:'iPhone 15', frequence:'1-2/jour',  notes:'' },
+    { id:'369c3402-aa15-81fe-87cf-c75d2c14f94c', nom:'Car Fan Brand FR',        produit:'Resin lamps voitures',  statut:'3-5 ventes/mois',followers:'3k+',     format:['RP','MX'],      hashtags:'#car #voiture #decoration #racing #f1',                telephone:'iPhone 15', frequence:'1/jour',    notes:'' },
+    { id:'369c3402-aa15-8197-93b3-cd8291614615', nom:'US Whisky-US',             produit:'Cocktail smoker',       statut:'Dormant',        followers:'45k+',    format:['RP','PR','MX'], hashtags:'#whiskey #drinks #cocktails #gifts #cocktaillovers',   telephone:'iPhone 16', frequence:'1/jour',    notes:'' },
+    { id:'369c3402-aa15-8119-b460-f3bb3f151c3d', nom:'Ear Cleaner FR',           produit:'Ear cleaner',           statut:'Dormant',        followers:'3k+',     format:['MX','PR'],      hashtags:'#ear #oreille #lavage #routine #douche',               telephone:'iPhone 15', frequence:'1/jour',    notes:'' },
+    { id:'369c3402-aa15-8116-b0a9-da85b9fde105', nom:'Handbag AI Founder FR',    produit:'Sac à main AI founder', statut:'Actif',          followers:'1k+',     format:['PR','MX'],      hashtags:'#faitmain #handmade #artisan #sac #bag',               telephone:'iPhone 15', frequence:'1-2/jour',  notes:'' },
+    { id:'369c3402-aa15-817d-a11e-daac8e5716dc', nom:'iPhone 11 Art IA #1',      produit:'TBD',                   statut:'Jamais primé',   followers:'0',       format:['PR'],           hashtags:'',                                                     telephone:'iPhone 11', frequence:'1-2/jour',  notes:'' },
+    { id:'369c3402-aa15-81f7-9644-d98befffc8eb', nom:'iPhone 11 Art IA #2',      produit:'TBD',                   statut:'Non primé',      followers:'~100',    format:['MX','PR'],      hashtags:'',                                                     telephone:'iPhone 11', frequence:'1-2/jour',  notes:'' },
+    { id:'369c3402-aa15-8194-81ef-dbf4c238ee5d', nom:'US Museum / Resin Art-US', produit:'Resin art lamps',       statut:'Warm-up',        followers:'Nouveau', format:['RP','PR'],      hashtags:'#resinart #resinlamp #handmade #animelamp #nba #lotr', telephone:'À préciser',frequence:'1/jour',    notes:'' },
+    // ── Accounts to Create ──────────────────────────────────────────────────
+    { id:'tocreate-aistatue-us',  nom:'AI Statue Portrait US', produit:'Museum portrait poster/canvas', statut:'To Create', followers:'0', format:['PR','RP'], hashtags:'#aiart #museumportrait #customportrait #giftideas #artlovers', telephone:'TBD', frequence:'1-2/jour', notes:'US account — viral AI museum/statue portrait format. Scratch/reveal engine. POD fulfillment.' },
+    { id:'tocreate-carfan-us',    nom:'Car Fan Brand US',      produit:'Resin car lamps',               statut:'To Create', followers:'0', format:['RP','MX'], hashtags:'#car #resinlamp #carlovers #giftforhim #racingcar',           telephone:'TBD', frequence:'1/jour',   notes:'US clone of Car Fan Brand FR — English content, same product, source @caresinworks.' },
+    { id:'tocreate-earcleaner-us',nom:'Ear Cleaner US',        produit:'Ear cleaner',                   statut:'To Create', followers:'0', format:['MX','PR'], hashtags:'#earwax #earcare #satisfying #hygiene #oddlysatisfying',      telephone:'TBD', frequence:'1/jour',   notes:'US market expansion. Same format as Ear Cleaner FR but in English.' },
   ];
+
+  // Restore hashtags saved by "Generate hashtags" button (stored locally per account)
+  for (const a of S.accounts) {
+    const saved = ls('hashtags_' + a.id);
+    if (saved) a.hashtags = saved;
+  }
+
   updateHeaderSub();
 }
 
@@ -470,56 +499,57 @@ async function doValidate(pageId, btn) {
   }
 }
 
-async function doDownload(pageId, videoUrl, btn) {
-  if (!videoUrl) {
-    toast('No video URL yet — agent must push first');
-    return;
-  }
+function doDownload(pageId, videoUrl, btn) {
+  if (!videoUrl) { toast('No video URL yet — agent must push first'); return; }
+
   const orig = btn.innerHTML;
   btn.disabled = true;
-  btn.innerHTML = 'Preparing…';
+  btn.innerHTML = 'Opening…';
 
-  let opened = false;
-  try {
-    const res = await fetch(videoUrl, { mode: 'cors' });
-    if (!res.ok) throw new Error('Video fetch failed');
-    const blob = await res.blob();
-    const file = new File([blob], 'ig-reel.mp4', { type: 'video/mp4' });
+  const reset = () => setTimeout(() => {
+    btn.disabled = false;
+    btn.classList.remove('done');
+    btn.innerHTML = orig;
+    btn.blur();
+  }, 1800);
 
-    if (navigator.canShare?.({ files: [file] })) {
-      await navigator.share({
-        files: [file],
-        title: 'Instagram Reel',
-        text: 'Save this video to Photos, then post manually.',
+  const markDone = (msg) => {
+    btn.innerHTML = 'Opened ✓';
+    btn.classList.add('done');
+    toast(msg);
+    reset();
+  };
+
+  // iOS-safe: call navigator.share BEFORE any await/fetch so user gesture is still active
+  if (navigator.share) {
+    navigator.share({ url: videoUrl, title: 'IG Reel', text: 'Open in Safari → long-press video → Save' })
+      .then(() => markDone('Share sheet opened ↗'))
+      .catch(e => {
+        if (e.name === 'AbortError') {
+          reset(); // user dismissed share sheet — not an error
+        } else {
+          // Share failed (e.g. desktop Safari) — open URL directly
+          _openVideoUrl(videoUrl);
+          markDone('Opened in browser ↗');
+        }
       });
-      opened = true;
-    } else {
-      const objectUrl = URL.createObjectURL(blob);
-      window.open(objectUrl, '_blank');
-      setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
-      opened = true;
-    }
-  } catch (e) {
-    window.open(videoUrl, '_blank');
-    opened = true;
+    return;
   }
 
-  try {
-    if (opened) {
-      btn.classList.add('done');
-      btn.innerHTML = 'Opened ✓';
-      toast('Video opened — use Share → Save Video');
-    }
-  } catch (e) {
-    toast('Video opened');
-  } finally {
-    setTimeout(() => {
-      btn.disabled = false;
-      btn.classList.remove('done');
-      btn.innerHTML = orig;
-      btn.blur();
-    }, 1600);
-  }
+  // Fallback for browsers without Web Share API
+  _openVideoUrl(videoUrl);
+  markDone('Opened in browser ↗');
+}
+
+function _openVideoUrl(url) {
+  // Anchor click is more reliable than window.open in standalone PWA mode
+  const a = document.createElement('a');
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 
 async function createPost(data) {
@@ -631,7 +661,7 @@ function renderAccounts() {
   const pendingToday = totalToday - postedToday;
 
   let html = `
-  <div class="today-bar">
+  <div class="today-bar" style="cursor:pointer" onclick="goToContentTab()" title="Tap to see today's content">
     <div class="today-stat"><div class="today-stat-val blue">${totalToday}</div><div class="today-stat-label">Today</div></div>
     <div class="today-sep"></div>
     <div class="today-stat"><div class="today-stat-val green">${postedToday}</div><div class="today-stat-label">Posted</div></div>
@@ -653,7 +683,7 @@ function renderAccounts() {
       : `<div class="hashtag-gen-btn" onclick="event.stopPropagation();generateHashtags('${a.id}','${esc(a.nom)}','${esc(a.produit)}')">✦ Generate hashtags</div>`;
 
     html += `
-    <div class="account-card ${sClass}" onclick="toast('Account detail — coming soon')">
+    <div class="account-card ${sClass}" onclick="openAccountContent('${esc(a.nom)}')" title="Tap to see ${esc(a.nom)} posts">
       <div class="card-top">
         <div>
           <div class="card-name">${esc(a.nom)}</div>
@@ -708,12 +738,19 @@ function renderPostCard(p) {
   const pClass  = p.status === 'Validated' ? 'psp-validated' : p.status === 'Posted' ? 'psp-posted' : 'psp-pending';
   const descFull = (p.description || '') + (p.hashtags ? '\n' + p.hashtags : '');
 
+  // Store text in _clips map — avoids all HTML-attribute quote-escaping issues
+  // (JSON.stringify produces double-quoted strings that break onclick="" attributes)
+  _clips[p.id + ':hook'] = p.hook || '';
+  _clips[p.id + ':desc'] = descFull;
+  _clips[p.id + ':tags'] = p.hashtags || '';
+  _clips[p.id + ':vid']  = p.videoUrl || '';
+
   let actions = '';
-  if (p.hook)          actions += `<button class="copy-btn" onclick="copyText(${JSON.stringify(p.hook)},this)">⧉ Hook</button>`;
-  if (descFull.trim()) actions += `<button class="copy-btn description" onclick="copyText(${JSON.stringify(descFull)},this)">⧉ Desc+#</button>`;
-  if (p.hashtags)      actions += `<button class="copy-btn hashtags" onclick="copyText(${JSON.stringify(p.hashtags)},this)">⧉ #Tags</button>`;
+  if (p.hook)          actions += `<button class="copy-btn" onclick="copyText(_clips['${p.id}:hook'],this)">⧉ Hook</button>`;
+  if (descFull.trim()) actions += `<button class="copy-btn description" onclick="copyText(_clips['${p.id}:desc'],this)">⧉ Desc+#</button>`;
+  if (p.hashtags)      actions += `<button class="copy-btn hashtags" onclick="copyText(_clips['${p.id}:tags'],this)">⧉ #Tags</button>`;
   if (p.status === 'Pending') actions += `<button class="validate-btn" onclick="doValidate('${p.id}',this)">✓ Validate</button>`;
-  actions += `<button class="dl-btn" onclick="doDownload('${p.id}',${JSON.stringify(p.videoUrl||'')},this)">↓ Video</button>`;
+  actions += `<button class="dl-btn" onclick="doDownload('${p.id}',_clips['${p.id}:vid'],this)">↓ Video</button>`;
 
   return `
   <div class="post-card ${sClass}" data-id="${p.id}">
@@ -732,10 +769,17 @@ function renderPostCard(p) {
 }
 
 function renderContent() {
-  const d       = formatDateDisplay(S.currentDate);
-  const total   = S.posts.length;
-  const posted  = S.posts.filter(p => p.status === 'Posted').length;
-  const pending = S.posts.filter(p => p.status !== 'Posted').length;
+  // Clear clip buffer from previous render to avoid stale data
+  Object.keys(_clips).forEach(k => delete _clips[k]);
+
+  const d = formatDateDisplay(S.currentDate);
+  const visiblePosts = S.accountFilter
+    ? S.posts.filter(p => p.account === S.accountFilter)
+    : S.posts;
+
+  const total   = visiblePosts.length;
+  const posted  = visiblePosts.filter(p => p.status === 'Posted').length;
+  const pending = visiblePosts.filter(p => p.status !== 'Posted').length;
 
   let html = `
   <div class="view-controls">
@@ -746,18 +790,29 @@ function renderContent() {
       <button class="nav-btn" onclick="changeDate(1)">&#8250;</button>
     </div>
     <button class="btn-add" onclick="openAddPost()"><span style="font-size:15px;line-height:1">+</span> Post</button>
-  </div>
-  <div class="status-chips">
+  </div>`;
+
+  if (S.accountFilter) {
+    html += `<div class="filter-bar">
+      <span style="color:var(--accent);font-size:12px;font-weight:500">@${esc(S.accountFilter)}</span>
+      <button class="filter-clear" onclick="clearFilter()">✕ All accounts</button>
+    </div>`;
+  }
+
+  html += `<div class="status-chips">
     <div class="chip chip-blue"><strong>${total}</strong> scheduled</div>
     <div class="chip chip-green"><strong>${posted}</strong> posted</div>
     <div class="chip chip-yellow"><strong>${pending}</strong> remaining</div>
   </div>`;
 
-  if (!S.posts.length) {
-    html += `<div class="empty-state">No posts for ${d}<br><br><button class="btn-add" onclick="openAddPost()">+ Add first post</button></div>`;
+  if (!visiblePosts.length) {
+    const emptyMsg = S.accountFilter
+      ? `No posts for <strong>${esc(S.accountFilter)}</strong> on ${d}`
+      : `No posts for ${d}`;
+    html += `<div class="empty-state">${emptyMsg}<br><br><button class="btn-add" onclick="openAddPost()">+ Add first post</button></div>`;
   } else {
     const byTime = {};
-    for (const p of S.posts) {
+    for (const p of visiblePosts) {
       const t = p.time || '—';
       (byTime[t] = byTime[t] || []).push(p);
     }
@@ -884,29 +939,25 @@ function closeModal() {
 // ─────────────────────────────────────────────────────────────────────────────
 // HASHTAG GENERATOR (rule-based — Claude/Codex can improve via Notion push)
 // ─────────────────────────────────────────────────────────────────────────────
-async function generateHashtags(accountId, nom, produit) {
+function generateHashtags(accountId, nom, produit) {
   const n = (nom + ' ' + produit).toLowerCase();
   let tags;
-  if      (n.includes('tea') || n.includes('thé'))   tags = ['#gift','#tea','#cadeau','#teatime','#maison'];
-  else if (n.includes('car') || n.includes('voiture'))tags = ['#car','#voiture','#decoration','#racing','#f1'];
-  else if (n.includes('ear'))                          tags = ['#ear','#oreille','#lavage','#routine','#douche'];
-  else if (n.includes('bag') || n.includes('sac'))    tags = ['#fashion','#handmade','#artisan','#sac','#bag'];
-  else if (n.includes('whisky') || n.includes('whiskey')) tags = ['#whiskey','#drinks','#cocktails','#gifts','#cocktaillovers'];
-  else if (n.includes('resin'))                        tags = ['#resinart','#resinlamp','#handmade','#artisanat','#homedecor'];
-  else                                                  tags = ['#viral','#trending','#shop','#lifestyle','#discover'];
+  if      (n.includes('tea') || n.includes('thé'))        tags = ['#gift','#tea','#cadeau','#teatime','#maison'];
+  else if (n.includes('car') || n.includes('voiture'))     tags = ['#car','#voiture','#decoration','#racing','#f1'];
+  else if (n.includes('ear'))                               tags = ['#ear','#oreille','#lavage','#routine','#douche'];
+  else if (n.includes('bag') || n.includes('sac'))         tags = ['#fashion','#handmade','#artisan','#sac','#bag'];
+  else if (n.includes('whisky') || n.includes('whiskey'))  tags = ['#whiskey','#drinks','#cocktails','#gifts','#cocktaillovers'];
+  else if (n.includes('resin'))                             tags = ['#resinart','#resinlamp','#handmade','#artisanat','#homedecor'];
+  else if (n.includes('museum') || n.includes('portrait')) tags = ['#aiart','#museumportrait','#customportrait','#giftideas','#artlovers'];
+  else                                                      tags = ['#viral','#trending','#shop','#lifestyle','#discover'];
 
   const str = tags.join(' ');
-  try {
-    await notion('/v1/pages/' + accountId, 'PATCH', {
-      properties: { Hashtags: { rich_text: [{ text: { content: str } }] } }
-    });
-    const acct = S.accounts.find(a => a.id === accountId);
-    if (acct) acct.hashtags = str;
-    renderAccounts();
-    toast('Hashtags generated ✓');
-  } catch (e) {
-    toast('Generated: ' + str + ' (save to Notion failed)');
-  }
+  // Accounts are hardcoded (not Notion-backed) → save to localStorage so hashtags persist across sessions
+  lsSet('hashtags_' + accountId, str);
+  const acct = S.accounts.find(a => a.id === accountId);
+  if (acct) acct.hashtags = str;
+  renderAccounts();
+  toast('Hashtags saved ✓');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1015,6 +1066,39 @@ async function changeDate(delta) {
   }
 }
 
+// Opens Content tab filtered to a specific account
+function openAccountContent(nom) {
+  S.accountFilter = nom;
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(t => t.classList.remove('active'));
+  tabs[1].classList.add('active');
+  S.activeTab = 'content';
+  ['accounts','content','week','month'].forEach(id => {
+    document.getElementById('tab-' + id).style.display = id === 'content' ? '' : 'none';
+  });
+  document.getElementById('tab-content').innerHTML = '<div class="loading-state"><span class="spinner"></span>Loading…</div>';
+  loadPostsForDate(S.currentDate)
+    .then(renderContent)
+    .catch(e => {
+      document.getElementById('tab-content').innerHTML = `<div class="error-state">${esc(e.message)}</div>`;
+    });
+}
+
+// Clears account filter and re-renders content view
+function clearFilter() {
+  S.accountFilter = null;
+  renderContent();
+}
+
+// Switches to Content tab with no filter (used by today-bar tap)
+function goToContentTab() {
+  S.accountFilter = null;
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(t => t.classList.remove('active'));
+  tabs[1].classList.add('active');
+  switchTab('content', tabs[1]);
+}
+
 async function refreshAll() {
   toast('Refreshing…');
   await checkAppUpdate(false);
@@ -1121,13 +1205,53 @@ async function init() {
   }
 }
 
-// Service worker
+// ─────────────────────────────────────────────────────────────────────────────
+// PULL-TO-REFRESH
+// ─────────────────────────────────────────────────────────────────────────────
+function initPullToRefresh() {
+  const ptr = document.getElementById('ptr');
+  let startY = 0;
+  let pulling = false;
+  let triggered = false;
+
+  document.addEventListener('touchstart', e => {
+    if ((document.scrollingElement || document.body).scrollTop === 0) {
+      startY = e.touches[0].clientY;
+      pulling = true;
+      triggered = false;
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchmove', e => {
+    if (!pulling || triggered) return;
+    const dy = e.touches[0].clientY - startY;
+    if (dy > 72) {
+      triggered = true;
+      pulling = false;
+      ptr.classList.add('show');
+      refreshAll().finally(() => ptr.classList.remove('show'));
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchend', () => { pulling = false; }, { passive: true });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SERVICE WORKER
+// ─────────────────────────────────────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js?v=' + APP_VERSION).then(reg => reg.update()).catch(() => {});
+    navigator.serviceWorker.register('sw.js?v=' + APP_VERSION)
+      .then(reg => reg.update())
+      .catch(() => {});
+    // Force page reload when a new SW version takes control — ensures iPhone PWA gets latest app
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload();
+    });
   });
 }
 
+initPullToRefresh();
 init();
 </script>
 </body>
