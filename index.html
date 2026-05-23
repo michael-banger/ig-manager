@@ -305,6 +305,7 @@ const DB = {
   accounts: 'a783ba9a8ec14ff5b127cb84a17788f8',
   posts:    'c6516213feb34049950edfcc5d50b8e5',
 };
+const APP_VERSION = '2026-05-23-2245';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STORAGE
@@ -1015,6 +1016,7 @@ async function changeDate(delta) {
 
 async function refreshAll() {
   toast('Refreshing…');
+  await checkAppUpdate(false);
   try {
     loadAccounts();
     await loadPostsForDate(S.currentDate);
@@ -1052,6 +1054,26 @@ function toast(msg, duration = 2500) {
   el.classList.add('show');
   clearTimeout(el._t);
   el._t = setTimeout(() => el.classList.remove('show'), duration);
+}
+
+async function checkAppUpdate(silent = true) {
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    const reg = await navigator.serviceWorker.getRegistration();
+    if (reg) await reg.update();
+    const res = await fetch('index.html?v=' + Date.now(), { cache: 'no-store' });
+    const html = await res.text();
+    const m = html.match(/const APP_VERSION = '([^']+)'/);
+    const latest = m?.[1];
+    if (latest && latest !== APP_VERSION) {
+      toast('App updated — reopening…', 1200);
+      setTimeout(() => location.reload(), 800);
+    } else if (!silent) {
+      toast('Up to date ✓');
+    }
+  } catch (e) {
+    if (!silent) toast('Data refreshed · app update check failed');
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1100,7 +1122,9 @@ async function init() {
 
 // Service worker
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js?v=' + APP_VERSION).then(reg => reg.update()).catch(() => {});
+  });
 }
 
 init();
