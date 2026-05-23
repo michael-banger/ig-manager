@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IG Manager">
+<meta name="theme-color" content="#0a0a0a">
+<title>IG Manager</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
+<style>
+:root {
+  --bg:#0a0a0a; --surface:#111; --surface2:#1a1a1a; --border:#222; --border2:#2a2a2a;
+  --text:#f0f0f0; --muted:#666; --muted2:#444;
+  --accent:#3B82F6; --accent-dim:rgba(59,130,246,.12);
+  --green:#10B981; --yellow:#F59E0B; --red:#EF4444;
+  --r:12px; --rs:8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden;width:100%;height:100%}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;font-size:14px;line-height:1.5}
+
+/* ── SETUP ── */
+#setup{display:none;min-height:100vh;align-items:center;justify-content:center;padding:20px;flex-direction:column;gap:16px}
+.setup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:28px;width:100%;max-width:420px}
+.setup-card h2{font-size:18px;font-weight:700;margin-bottom:6px}
+.setup-card p{font-size:13px;color:var(--muted);margin-bottom:20px}
+.setup-card label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
+.setup-card input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);padding:10px 12px;color:var(--text);font-size:13px;margin-bottom:14px}
+.setup-card input:focus{outline:none;border-color:var(--accent)}
+.setup-card details{margin-top:16px;font-size:12px;color:var(--muted)}
+.setup-card details summary{cursor:pointer;color:var(--muted);margin-bottom:8px}
+.setup-card details ol{padding-left:16px;line-height:1.8}
+.setup-btn{width:100%;background:var(--accent);color:#fff;border:none;border-radius:var(--rs);padding:12px;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px}
+.setup-btn:hover{background:#2563eb}
+.setup-link{font-size:12px;color:var(--muted);cursor:pointer;text-decoration:underline}
+.setup-link:hover{color:var(--text)}
+
+/* ── APP ── */
+#app{display:none;flex-direction:column;min-height:100vh;max-width:1280px;margin:0 auto}
+
+/* Header */
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,10,.95);backdrop-filter:blur(12px);z-index:100}
+.header-logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#3B82F6,#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:16px}
+.logo-text{font-weight:700;font-size:15px;letter-spacing:-.3px}
+.logo-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.header-right{display:flex;gap:8px;align-items:center}
+.btn-icon{background:transparent;border:1px solid var(--border2);color:var(--muted);width:32px;height:32px;border-radius:7px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
+.btn-icon:hover{border-color:var(--border2);color:var(--text)}
+
+/* Nav */
+.nav-tabs{display:flex;padding:0 20px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.nav-tabs::-webkit-scrollbar{display:none}
+.tab{padding:12px 16px;font-size:13px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--text);border-bottom-color:var(--accent);font-weight:500}
+
+/* Main */
+.main{padding:20px;flex:1;overflow-x:hidden}
+
+/* Today bar */
+.today-bar{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.today-stat{display:flex;flex-direction:column;gap:2px}
+.today-stat-val{font-size:22px;font-weight:700}
+.today-stat-val.blue{color:var(--accent)}
+.today-stat-val.green{color:var(--green)}
+.today-stat-val.yellow{color:var(--yellow)}
+.today-stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.today-sep{width:1px;background:var(--border)}
+
+/* Section headers */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.section-title{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+.section-count{font-size:11px;color:var(--muted2)}
+.divider{height:1px;background:var(--border);margin:4px 0 20px}
+
+/* Account cards */
+.accounts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:12px;margin-bottom:28px}
+.account-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--muted2);border-radius:var(--r);padding:15px;cursor:pointer;transition:border-color .15s}
+.account-card:hover{border-color:var(--border2)}
+.account-card.status-warmup{border-left-color:var(--yellow)}
+.account-card.status-active{border-left-color:var(--accent)}
+.account-card.status-prime{border-left-color:var(--green)}
+.account-card.status-tocreate{border-left-color:var(--muted2);opacity:.6}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:8px}
+.card-name{font-size:14px;font-weight:600;margin-bottom:2px;word-break:break-word}
+.card-product{font-size:11px;color:var(--muted)}
+.status-pill{font-size:10px;font-weight:600;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;flex-shrink:0}
+.pill-prime{background:rgba(16,185,129,.12);color:var(--green)}
+.pill-warmup{background:rgba(245,158,11,.12);color:var(--yellow)}
+.pill-dormant{background:rgba(68,68,68,.3);color:var(--muted)}
+.pill-active{background:var(--accent-dim);color:var(--accent)}
+.pill-tocreate{background:rgba(68,68,68,.2);color:var(--muted2)}
+.card-stats{display:flex;gap:16px;margin-bottom:10px;flex-wrap:wrap}
+.stat-val{font-size:16px;font-weight:600}
+.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.format-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.format-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;background:var(--surface2);border:1px solid var(--border2);color:var(--muted)}
+.format-tag.pr{border-color:#3B82F6;color:#3B82F6;background:rgba(59,130,246,.08)}
+.format-tag.rp{border-color:#8B5CF6;color:#8B5CF6;background:rgba(139,92,246,.08)}
+.format-tag.mx{border-color:#EC4899;color:#EC4899;background:rgba(236,72,153,.08)}
+.format-tag.gen{border-color:#F59E0B;color:#F59E0B;background:rgba(245,158,11,.08)}
+.format-tag.eh{border-color:#10B981;color:#10B981;background:rgba(16,185,129,.08)}
+.card-hashtags{font-size:10px;color:var(--muted2);margin-top:6px;word-break:break-word}
+.hashtag-gen-btn{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:500;padding:3px 8px;border-radius:5px;cursor:pointer;margin-top:6px;border:1px dashed var(--accent);color:var(--accent);background:var(--accent-dim)}
+.hashtag-gen-btn:hover{background:rgba(59,130,246,.2)}
+.card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);gap:8px}
+.today-posts-label{font-size:10px;color:var(--muted)}
+.today-posts-count{font-size:13px;font-weight:600;color:var(--text)}
+.dot-row{display:flex;gap:4px;align-items:center}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--border2)}
+.dot.filled{background:var(--accent)}
+.dot.done{background:var(--green)}
+.card-add-btn{width:26px;height:26px;border-radius:6px;background:var(--surface2);border:1px solid var(--border2);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.card-add-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Content view */
+.view-controls{display:flex;gap:8px;margin-bottom:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.view-btns{display:flex;gap:4px}
+.view-btn{padding:6px 12px;border-radius:7px;font-size:12px;cursor:pointer;background:transparent;border:1px solid var(--border2);color:var(--muted)}
+.view-btn.active{background:var(--surface2);color:var(--text)}
+.date-nav{display:flex;align-items:center;gap:10px;flex:1;justify-content:center;min-width:0}
+.date-label{font-size:13px;font-weight:500;white-space:nowrap}
+.nav-btn{width:28px;height:28px;border-radius:6px;background:var(--surface);border:1px solid var(--border);cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.status-chips{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.chip{font-size:11px;font-weight:500;padding:5px 10px;border-radius:7px}
+.chip-blue{background:var(--accent-dim);border:1px solid rgba(59,130,246,.2);color:var(--accent)}
+.chip-green{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);color:var(--green)}
+.chip-yellow{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);color:var(--yellow)}
+.day-schedule{display:flex;flex-direction:column;gap:10px;width:100%;overflow:hidden}
+.time-slot{display:flex;align-items:flex-start;gap:10px;width:100%;min-width:0}
+.time-label{font-size:11px;color:var(--muted2);width:36px;padding-top:14px;text-align:right;flex-shrink:0;cursor:pointer;user-select:none}
+.time-label:hover{color:var(--accent)}
+.time-edit{font-size:9px;display:block}
+.slot-posts{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0;overflow:hidden}
+
+/* Post cards */
+.post-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--muted2);border-radius:var(--rs);padding:12px;display:flex;gap:10px;width:100%;min-width:0;overflow:hidden}
+.post-card.validated{border-left-color:var(--green)}
+.post-card.pending{border-left-color:var(--yellow)}
+.post-card.posted{border-left-color:var(--muted2);opacity:.6}
+.post-thumb{width:46px;height:82px;border-radius:6px;background:var(--surface2);flex-shrink:0;display:flex;align-items:center;justify-content:center;border:1px solid var(--border2);font-size:18px}
+.post-body{flex:1;min-width:0;overflow:hidden}
+.post-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;gap:6px}
+.post-account{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.post-status-pill{font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;white-space:nowrap;flex-shrink:0}
+.psp-pending{background:rgba(245,158,11,.12);color:var(--yellow)}
+.psp-validated{background:rgba(16,185,129,.12);color:var(--green)}
+.psp-posted{background:rgba(68,68,68,.2);color:var(--muted)}
+.post-hook{font-size:12px;color:var(--text);margin-bottom:4px;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.post-desc{font-size:11px;color:var(--muted);margin-bottom:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.post-actions{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.post-hashtags{font-size:10px;color:var(--muted2);margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.copy-btn{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:500;padding:4px 8px;border-radius:6px;cursor:pointer;border:1px solid var(--border2);background:var(--surface2);color:var(--muted);white-space:nowrap}
+.copy-btn:hover{border-color:var(--accent);color:var(--accent)}
+.copy-btn.description:hover{border-color:var(--green);color:var(--green)}
+.copy-btn.hashtags:hover{border-color:#8B5CF6;color:#8B5CF6}
+.dl-btn{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:500;padding:4px 8px;border-radius:6px;cursor:pointer;border:1px solid var(--accent);background:var(--accent-dim);color:var(--accent);white-space:nowrap}
+.dl-btn:hover{background:var(--accent);color:#fff}
+.dl-btn:disabled{opacity:.5;cursor:default}
+.validate-btn{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:500;padding:4px 8px;border-radius:6px;cursor:pointer;border:1px solid var(--green);background:rgba(16,185,129,.1);color:var(--green);white-space:nowrap}
+.validate-btn:hover{background:var(--green);color:#0a0a0a}
+.validate-btn:disabled{opacity:.5;cursor:default}
+
+/* Buttons */
+.btn-add{background:var(--accent);color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.btn-add:hover{background:#2563eb}
+.btn-secondary{background:var(--surface2);color:var(--muted);border:1px solid var(--border2);padding:8px 14px;border-radius:8px;font-size:13px;cursor:pointer}
+.btn-secondary:hover{color:var(--text)}
+
+/* Modal */
+#modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200}
+#modal{display:none;position:fixed;inset:0;z-index:201;align-items:flex-end;justify-content:center;pointer-events:none}
+#modal.open{pointer-events:auto}
+.modal-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r) var(--r) 0 0;padding:0;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;pointer-events:auto}
+@media(min-width:600px){#modal{align-items:center}.modal-card{border-radius:var(--r);max-height:85vh}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:1}
+.modal-header h3{font-size:15px;font-weight:600}
+.modal-close{background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:4px}
+.modal-body{padding:20px;display:flex;flex-direction:column;gap:12px}
+.modal-body label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
+.modal-body input,.modal-body select,.modal-body textarea{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);padding:9px 12px;color:var(--text);font-size:13px;font-family:inherit}
+.modal-body input:focus,.modal-body select:focus,.modal-body textarea:focus{outline:none;border-color:var(--accent)}
+.modal-body textarea{resize:vertical}
+.modal-body select option{background:var(--surface2)}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;padding:16px 20px;border-top:1px solid var(--border)}
+
+/* States */
+.loading-state{color:var(--muted);font-size:13px;padding:40px 0;text-align:center}
+.empty-state{color:var(--muted);font-size:13px;padding:40px 0;text-align:center}
+.error-state{color:var(--red);font-size:13px;padding:40px 0;text-align:center}
+.placeholder{color:var(--muted);font-size:13px;padding:40px 0;text-align:center}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Toast */
+#toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-10px);background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:8px 16px;border-radius:8px;font-size:12px;font-weight:500;opacity:0;transition:all .2s;z-index:999;pointer-events:none;white-space:nowrap;max-width:calc(100vw - 40px)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Settings panel */
+.settings-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px;max-width:420px;margin:20px auto}
+.settings-panel h3{font-size:14px;font-weight:600;margin-bottom:16px}
+.settings-panel label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
+.settings-panel input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);padding:9px 12px;color:var(--text);font-size:13px;margin-bottom:12px;font-family:inherit}
+.settings-panel input:focus{outline:none;border-color:var(--accent)}
+
+/* Responsive */
+@media(max-width:500px){
+  .header{padding:12px 14px}
+  .main{padding:12px 14px}
+  .accounts-grid{grid-template-columns:1fr}
+  .nav-tabs{padding:0 14px}
+  .tab{padding:10px 12px;font-size:12px}
+  .today-bar{gap:12px;padding:12px}
+  .today-stat-val{font-size:18px}
+  .view-controls{flex-direction:column;gap:8px}
+  .date-nav{width:100%}
+  .post-card{padding:10px;gap:8px}
+  .post-thumb{width:40px;height:72px;font-size:16px}
+  .time-label{width:30px;font-size:10px}
+  .status-chips{gap:4px}
+  .chip{font-size:10px;padding:4px 8px}
+  .modal-body{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── SETUP SCREEN ── -->
+<div id="setup">
+  <div class="setup-card">
+    <h2>IG Manager</h2>
+    <p>Connect your Notion workspace to get started. One-time setup.</p>
+
+    <label>Notion Integration Token</label>
+    <input type="password" id="s-token" placeholder="secret_xxxxxxxxxxxx" autocomplete="off">
+
+    <label>CORS Proxy URL <span style="color:var(--muted2);font-weight:400;text-transform:none">(required for iPhone)</span></label>
+    <input type="url" id="s-proxy" placeholder="https://notion-proxy.xxx.workers.dev" autocomplete="off">
+
+    <button class="setup-btn" onclick="saveSetup()">Save &amp; Launch</button>
+
+    <details style="margin-top:18px">
+      <summary>Setup guide (5 min)</summary>
+      <ol style="margin-top:8px">
+        <li><strong>Notion token</strong>: notion.so/profile/integrations → New integration → Copy secret</li>
+        <li><strong>Share databases</strong>: Open "IG Account Manager" + "IG Posts" in Notion → Share → add your integration</li>
+        <li><strong>CORS proxy</strong>: workers.cloudflare.com → free account → Create Worker → paste code from <em>cloudflare-worker.js</em> in this repo → Deploy → copy URL</li>
+      </ol>
+    </details>
+  </div>
+  <span class="setup-link" onclick="skipSetup()">Skip setup (offline demo)</span>
+</div>
+
+<!-- ── MAIN APP ── -->
+<div id="app">
+  <header class="header">
+    <div class="header-logo">
+      <div class="logo-icon">📊</div>
+      <div>
+        <div class="logo-text">IG Manager</div>
+        <div id="header-sub" class="logo-sub">Loading…</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="btn-icon" onclick="refreshAll()" title="Refresh">↻</button>
+      <button class="btn-icon" onclick="showSettings()" title="Settings">⚙</button>
+    </div>
+  </header>
+
+  <nav class="nav-tabs">
+    <div class="tab active" onclick="switchTab('accounts',this)">Accounts</div>
+    <div class="tab" onclick="switchTab('content',this)">Content</div>
+    <div class="tab" onclick="switchTab('week',this)">Week</div>
+    <div class="tab" onclick="switchTab('month',this)">Month</div>
+  </nav>
+
+  <main class="main">
+    <div id="tab-accounts"><div class="loading-state"><span class="spinner"></span>Loading accounts…</div></div>
+    <div id="tab-content" style="display:none"><div class="loading-state"><span class="spinner"></span>Loading posts…</div></div>
+    <div id="tab-week" style="display:none"><div class="placeholder">Week view — coming soon</div></div>
+    <div id="tab-month" style="display:none"><div class="placeholder">Month view — coming soon</div></div>
+  </main>
+</div>
+
+<!-- ── MODAL ── -->
+<div id="modal-overlay" onclick="closeModal()"></div>
+<div id="modal"></div>
+
+<!-- ── TOAST ── -->
+<div id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// CONSTANTS
+// ─────────────────────────────────────────────────────────────────────────────
+const DB = {
+  accounts: 'a783ba9a8ec14ff5b127cb84a17788f8',
+  posts:    'c6516213feb34049950edfcc5d50b8e5',
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STORAGE
+// ─────────────────────────────────────────────────────────────────────────────
+const ls  = k => localStorage.getItem('igm_' + k);
+const lsSet = (k, v) => localStorage.setItem('igm_' + k, v);
+const lsDel = k => localStorage.removeItem('igm_' + k);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────────────────────
+const S = {
+  accounts: [],
+  posts: [],
+  todayCounts: {},
+  currentDate: new Date().toISOString().slice(0, 10),
+  activeTab: 'accounts',
+  demo: false,
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NOTION API
+// ─────────────────────────────────────────────────────────────────────────────
+async function notion(path, method = 'GET', body = null) {
+  if (S.demo) throw new Error('Demo mode — configure token in Settings');
+
+  const token = ls('token');
+  const proxy = ls('proxy');
+
+  if (!token) { showSetupScreen(); throw new Error('No token configured'); }
+
+  const base = proxy ? proxy.replace(/\/$/, '') : 'https://api.notion.com';
+  const url  = base + path;
+
+  let response;
+  try {
+    response = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+        'Notion-Version': '2022-06-28',
+      },
+      body: body ? JSON.stringify(body) : null,
+    });
+  } catch (e) {
+    if (e.message.includes('fetch') || e.message.includes('NetworkError') || e.message.includes('CORS')) {
+      throw new Error('Network/CORS error — configure proxy URL in Settings (⚙)');
+    }
+    throw e;
+  }
+
+  const data = await response.json();
+  if (!response.ok) throw new Error((data.message || response.statusText) + ' (' + response.status + ')');
+  return data;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PROPERTY HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+function prop(page, name) {
+  const p = page.properties[name];
+  if (!p) return '';
+  switch (p.type) {
+    case 'title':        return p.title?.map(t => t.plain_text).join('') ?? '';
+    case 'rich_text':    return p.rich_text?.map(t => t.plain_text).join('') ?? '';
+    case 'select':       return p.select?.name ?? '';
+    case 'multi_select': return p.multi_select?.map(o => o.name) ?? [];
+    case 'date':         return p.date?.start ?? '';
+    case 'url':          return p.url ?? '';
+    default:             return '';
+  }
+}
+
+function parseAccount(p) {
+  return {
+    id: p.id,
+    nom:       prop(p, 'Nom'),
+    produit:   prop(p, 'Produit'),
+    statut:    prop(p, 'Statut'),
+    followers: prop(p, 'Followers'),
+    format:    prop(p, 'Format'),
+    hashtags:  prop(p, 'Hashtags'),
+    telephone: prop(p, 'Téléphone'),
+    frequence: prop(p, 'Fréquence'),
+    notes:     prop(p, 'Notes'),
+  };
+}
+
+function parsePost(p) {
+  return {
+    id:           p.id,
+    name:         prop(p, 'Name'),
+    account:      prop(p, 'Account'),
+    date:         prop(p, 'Date'),
+    time:         prop(p, 'Time'),
+    category:     prop(p, 'Category'),
+    status:       prop(p, 'Status'),
+    hook:         prop(p, 'Hook'),
+    description:  prop(p, 'Description'),
+    hashtags:     prop(p, 'Hashtags'),
+    videoUrl:     prop(p, 'Video URL'),
+    thumbnailUrl: prop(p, 'Thumbnail URL'),
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LOAD DATA
+// ─────────────────────────────────────────────────────────────────────────────
+async function loadAccounts() {
+  const data = await notion('/v1/databases/' + DB.accounts + '/query', 'POST', {
+    sorts: [{ property: 'Nom', direction: 'ascending' }],
+    page_size: 100,
+  });
+  S.accounts = data.results.map(parseAccount);
+  updateHeaderSub();
+}
+
+async function loadPostsForDate(date) {
+  const data = await notion('/v1/databases/' + DB.posts + '/query', 'POST', {
+    filter: { property: 'Date', date: { equals: date } },
+    sorts: [{ property: 'Time', direction: 'ascending' }],
+    page_size: 100,
+  });
+  S.posts = data.results.map(parsePost);
+
+  S.todayCounts = {};
+  for (const p of S.posts) {
+    const k = p.account;
+    if (!S.todayCounts[k]) S.todayCounts[k] = { total: 0, posted: 0 };
+    S.todayCounts[k].total++;
+    if (p.status === 'Posted') S.todayCounts[k].posted++;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ACTIONS
+// ─────────────────────────────────────────────────────────────────────────────
+async function doValidate(pageId, btn) {
+  btn.disabled = true;
+  btn.textContent = '…';
+  try {
+    await notion('/v1/pages/' + pageId, 'PATCH', {
+      properties: { Status: { select: { name: 'Validated' } } }
+    });
+    const card = btn.closest('.post-card');
+    card.classList.replace('pending', 'validated');
+    const pill = card.querySelector('.post-status-pill');
+    pill.textContent = 'Validated';
+    pill.className = 'post-status-pill psp-validated';
+    btn.remove();
+    toast('Validated ✓ — Notion updated');
+  } catch (e) {
+    toast('Error: ' + e.message);
+    btn.disabled = false;
+    btn.textContent = '✓ Validate';
+  }
+}
+
+async function doDownload(pageId, videoUrl, btn) {
+  if (!videoUrl) {
+    toast('No video URL yet — agent must push first');
+    return;
+  }
+  window.open(videoUrl, '_blank');
+
+  btn.disabled = true;
+  try {
+    await notion('/v1/pages/' + pageId, 'PATCH', {
+      properties: { Status: { select: { name: 'Posted' } } }
+    });
+    const card = btn.closest('.post-card');
+    card.classList.remove('pending', 'validated');
+    card.classList.add('posted');
+    const pill = card.querySelector('.post-status-pill');
+    pill.textContent = 'Posted';
+    pill.className = 'post-status-pill psp-posted';
+    btn.textContent = 'Downloaded ✓';
+    toast('Saved to Photos · Status → Posted');
+  } catch (e) {
+    toast('Downloaded — could not update status: ' + e.message);
+  }
+}
+
+async function createPost(data) {
+  const name = (data.account || 'Post') + ' — ' + data.date;
+  const props = {
+    Name:        { title:      [{ text: { content: name } }] },
+    Account:     { rich_text:  [{ text: { content: data.account || '' } }] },
+    Date:        { date:       { start: data.date } },
+    Time:        { rich_text:  [{ text: { content: data.time || '' } }] },
+    Status:      { select:     { name: 'Pending' } },
+    Hook:        { rich_text:  [{ text: { content: data.hook || '' } }] },
+    Description: { rich_text:  [{ text: { content: data.description || '' } }] },
+    Hashtags:    { rich_text:  [{ text: { content: data.hashtags || '' } }] },
+  };
+  if (data.category) props.Category = { select: { name: data.category } };
+  if (data.videoUrl) props['Video URL'] = { url: data.videoUrl };
+
+  return notion('/v1/pages', 'POST', {
+    parent: { database_id: DB.posts },
+    properties: props,
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// COPY
+// ─────────────────────────────────────────────────────────────────────────────
+function copyText(text, btn) {
+  navigator.clipboard?.writeText(text).catch(() => {});
+  const orig = btn.innerHTML;
+  btn.innerHTML = '<span style="color:var(--green)">Copied!</span>';
+  setTimeout(() => { btn.innerHTML = orig; }, 1100);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER ACCOUNTS
+// ─────────────────────────────────────────────────────────────────────────────
+function isToCreate(statut) {
+  const s = (statut || '').toLowerCase();
+  return s.includes('to create') || s.includes('creer') || s.includes('créer');
+}
+
+function getStatusMeta(statut) {
+  const s = (statut || '').toLowerCase();
+  if (s.includes('warm'))                         return ['status-warmup',  'pill-warmup',  'Warm-up'];
+  if (s.includes('prime') && !s.includes('ex'))   return ['status-prime',   'pill-prime',   'Prime'];
+  if (s.includes('actif') || s.includes('active')) return ['status-active', 'pill-active',  'Active'];
+  const label = statut.length > 18 ? statut.slice(0, 16) + '…' : (statut || 'Dormant');
+  return ['', 'pill-dormant', label];
+}
+
+function targetFromFreq(freq) {
+  const m = (freq || '').match(/(\d+)/);
+  return m ? parseInt(m[1]) : 1;
+}
+
+function dotsHtml(nom, freq) {
+  const c     = S.todayCounts[nom] || { total: 0, posted: 0 };
+  const target = Math.max(targetFromFreq(freq), c.total);
+  let dots = '<div class="dot-row">';
+  for (let i = 0; i < target; i++) {
+    if (i < c.posted)      dots += '<div class="dot done"></div>';
+    else if (i < c.total)  dots += '<div class="dot filled"></div>';
+    else                   dots += '<div class="dot"></div>';
+  }
+  dots += '</div>';
+  const color = c.posted >= target && target > 0 ? 'var(--green)' : c.total > 0 ? 'var(--accent)' : 'var(--muted)';
+  return dots + '<span class="today-posts-count" style="color:' + color + '">' + c.total + ' / ' + target + '</span>';
+}
+
+function formatsHtml(fmts) {
+  if (!Array.isArray(fmts) || !fmts.length) return '';
+  const cls = { PR:'pr', RP:'rp', MX:'mx', GEN:'gen', EH:'eh' };
+  return '<div class="format-tags">' + fmts.map(f => '<span class="format-tag ' + (cls[f]||'') + '">' + esc(f) + '</span>').join('') + '</div>';
+}
+
+function renderAccounts() {
+  const active   = S.accounts.filter(a => !isToCreate(a.statut));
+  const toCreate = S.accounts.filter(a =>  isToCreate(a.statut));
+
+  const totalToday   = Object.values(S.todayCounts).reduce((s, c) => s + c.total,  0);
+  const postedToday  = Object.values(S.todayCounts).reduce((s, c) => s + c.posted, 0);
+  const pendingToday = totalToday - postedToday;
+
+  let html = `
+  <div class="today-bar">
+    <div class="today-stat"><div class="today-stat-val blue">${totalToday}</div><div class="today-stat-label">Today</div></div>
+    <div class="today-sep"></div>
+    <div class="today-stat"><div class="today-stat-val green">${postedToday}</div><div class="today-stat-label">Posted</div></div>
+    <div class="today-sep"></div>
+    <div class="today-stat"><div class="today-stat-val yellow">${pendingToday}</div><div class="today-stat-label">Pending</div></div>
+    <div class="today-sep"></div>
+    <div class="today-stat"><div class="today-stat-val" style="color:var(--muted)">${active.length}</div><div class="today-stat-label">Accounts</div></div>
+  </div>
+  <div class="section-header">
+    <div class="section-title">Active Accounts</div>
+    <div class="section-count">${active.length}</div>
+  </div>
+  <div class="accounts-grid">`;
+
+  for (const a of active) {
+    const [sClass, pClass, pText] = getStatusMeta(a.statut);
+    const hashtagsEl = a.hashtags
+      ? `<div class="card-hashtags">${esc(a.hashtags)}</div>`
+      : `<div class="hashtag-gen-btn" onclick="event.stopPropagation();generateHashtags('${a.id}','${esc(a.nom)}','${esc(a.produit)}')">✦ Generate hashtags</div>`;
+
+    html += `
+    <div class="account-card ${sClass}" onclick="toast('Account detail — coming soon')">
+      <div class="card-top">
+        <div>
+          <div class="card-name">${esc(a.nom)}</div>
+          <div class="card-product">${esc(a.produit)}${a.telephone ? ' · ' + esc(a.telephone) : ''}</div>
+        </div>
+        <span class="status-pill ${pClass}">${esc(pText)}</span>
+      </div>
+      ${a.followers ? `<div class="card-stats"><div><div class="stat-val">${esc(a.followers)}</div><div class="stat-label">Followers</div></div></div>` : ''}
+      ${formatsHtml(a.format)}
+      ${hashtagsEl}
+      <div class="card-footer">
+        <div>
+          <div class="today-posts-label">Today</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:2px">${dotsHtml(a.nom, a.frequence)}</div>
+        </div>
+        <button class="card-add-btn" onclick="event.stopPropagation();openAddPost('${esc(a.nom)}')">+</button>
+      </div>
+    </div>`;
+  }
+  html += '</div>';
+
+  if (toCreate.length) {
+    html += `<div class="divider"></div>
+    <div class="section-header"><div class="section-title">Accounts to Create</div><div class="section-count">${toCreate.length}</div></div>
+    <div class="accounts-grid">`;
+    for (const a of toCreate) {
+      html += `
+      <div class="account-card status-tocreate">
+        <div class="card-top">
+          <div><div class="card-name">${esc(a.nom)}</div><div class="card-product">${esc(a.produit)}</div></div>
+          <span class="status-pill pill-tocreate">To Create</span>
+        </div>
+        ${formatsHtml(a.format)}
+        ${a.hashtags ? `<div class="card-hashtags">${esc(a.hashtags)}</div>` : ''}
+      </div>`;
+    }
+    html += '</div>';
+  }
+
+  document.getElementById('tab-accounts').innerHTML = html;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER CONTENT (DAY VIEW)
+// ─────────────────────────────────────────────────────────────────────────────
+function categoryEmoji(cat) {
+  return { PR:'🖼', RP:'🔁', MX:'🎬', GEN:'✨', EH:'🎭' }[cat] || '📄';
+}
+
+function renderPostCard(p) {
+  const sClass  = p.status === 'Validated' ? 'validated' : p.status === 'Posted' ? 'posted' : 'pending';
+  const pClass  = p.status === 'Validated' ? 'psp-validated' : p.status === 'Posted' ? 'psp-posted' : 'psp-pending';
+  const descFull = (p.description || '') + (p.hashtags ? '\n' + p.hashtags : '');
+
+  let actions = '';
+  if (p.hook)          actions += `<button class="copy-btn" onclick="copyText(${JSON.stringify(p.hook)},this)">⧉ Hook</button>`;
+  if (descFull.trim()) actions += `<button class="copy-btn description" onclick="copyText(${JSON.stringify(descFull)},this)">⧉ Desc+#</button>`;
+  if (p.hashtags)      actions += `<button class="copy-btn hashtags" onclick="copyText(${JSON.stringify(p.hashtags)},this)">⧉ #Tags</button>`;
+  if (p.status === 'Pending') actions += `<button class="validate-btn" onclick="doValidate('${p.id}',this)">✓ Validate</button>`;
+  actions += `<button class="dl-btn" onclick="doDownload('${p.id}',${JSON.stringify(p.videoUrl||'')},this)">↓ Video</button>`;
+
+  return `
+  <div class="post-card ${sClass}" data-id="${p.id}">
+    <div class="post-thumb">${categoryEmoji(p.category)}</div>
+    <div class="post-body">
+      <div class="post-top">
+        <span class="post-account">${esc(p.account)}</span>
+        <span class="post-status-pill ${pClass}">${esc(p.status || 'Pending')}</span>
+      </div>
+      ${p.hook        ? `<div class="post-hook">"${esc(p.hook)}"</div>` : ''}
+      ${p.description ? `<div class="post-desc">${esc(p.description)}</div>` : ''}
+      <div class="post-actions">${actions}</div>
+      ${p.hashtags    ? `<div class="post-hashtags">${esc(p.hashtags)}</div>` : ''}
+    </div>
+  </div>`;
+}
+
+function renderContent() {
+  const d       = formatDateDisplay(S.currentDate);
+  const total   = S.posts.length;
+  const posted  = S.posts.filter(p => p.status === 'Posted').length;
+  const pending = S.posts.filter(p => p.status !== 'Posted').length;
+
+  let html = `
+  <div class="view-controls">
+    <div class="view-btns"><div class="view-btn active">Day</div></div>
+    <div class="date-nav">
+      <button class="nav-btn" onclick="changeDate(-1)">&#8249;</button>
+      <div class="date-label">${d}</div>
+      <button class="nav-btn" onclick="changeDate(1)">&#8250;</button>
+    </div>
+    <button class="btn-add" onclick="openAddPost()"><span style="font-size:15px;line-height:1">+</span> Post</button>
+  </div>
+  <div class="status-chips">
+    <div class="chip chip-blue"><strong>${total}</strong> scheduled</div>
+    <div class="chip chip-green"><strong>${posted}</strong> posted</div>
+    <div class="chip chip-yellow"><strong>${pending}</strong> remaining</div>
+  </div>`;
+
+  if (!S.posts.length) {
+    html += `<div class="empty-state">No posts for ${d}<br><br><button class="btn-add" onclick="openAddPost()">+ Add first post</button></div>`;
+  } else {
+    const byTime = {};
+    for (const p of S.posts) {
+      const t = p.time || '—';
+      (byTime[t] = byTime[t] || []).push(p);
+    }
+    html += '<div class="day-schedule">';
+    for (const [time, posts] of Object.entries(byTime)) {
+      html += `<div class="time-slot">
+        <div class="time-label" onclick="toast('Edit posting time — tap the pencil in a future update')">${esc(time)}<span class="time-edit">✎</span></div>
+        <div class="slot-posts">${posts.map(renderPostCard).join('')}</div>
+      </div>`;
+    }
+    html += '</div>';
+  }
+
+  document.getElementById('tab-content').innerHTML = html;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ADD POST MODAL
+// ─────────────────────────────────────────────────────────────────────────────
+function openAddPost(accountName) {
+  const active = S.accounts.filter(a => !isToCreate(a.statut));
+  const selected = accountName ? S.accounts.find(a => a.nom === accountName) : null;
+  const defHashtags = selected?.hashtags || '';
+  const defTime = (() => {
+    const h = new Date().getHours();
+    return h + ':' + String(new Date().getMinutes()).padStart(2, '0');
+  })();
+
+  const opts = active.map(a =>
+    `<option value="${esc(a.nom)}" ${a.nom === accountName ? 'selected' : ''}>${esc(a.nom)}</option>`
+  ).join('');
+
+  document.getElementById('modal').innerHTML = `
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Add Post</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <label>Account</label>
+        <select id="f-account" onchange="onAccountChange(this)">${opts}</select>
+      </div>
+      <div class="modal-grid">
+        <div><label>Date</label><input type="date" id="f-date" value="${S.currentDate}"></div>
+        <div><label>Time</label><input type="text" id="f-time" value="${defTime}" placeholder="18:00"></div>
+      </div>
+      <div>
+        <label>Category</label>
+        <select id="f-category"><option>PR</option><option>RP</option><option>MX</option><option>GEN</option><option>EH</option></select>
+      </div>
+      <div>
+        <label>Hook</label>
+        <textarea id="f-hook" placeholder="Opening line of the video…" rows="2"></textarea>
+      </div>
+      <div>
+        <label>Description</label>
+        <textarea id="f-desc" placeholder="Caption text…" rows="3"></textarea>
+      </div>
+      <div>
+        <label>Hashtags</label>
+        <textarea id="f-hashtags" rows="2">${esc(defHashtags)}</textarea>
+      </div>
+      <div>
+        <label>Video URL <span style="color:var(--muted2);text-transform:none;font-weight:400">(optional — agents push this)</span></label>
+        <input type="url" id="f-video" placeholder="https://…">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-add" id="modal-submit" onclick="submitAddPost()">Push to Notion</button>
+    </div>
+  </div>`;
+
+  document.getElementById('modal').style.display = 'flex';
+  document.getElementById('modal-overlay').style.display = 'block';
+}
+
+function onAccountChange(sel) {
+  const a = S.accounts.find(x => x.nom === sel.value);
+  if (a?.hashtags) document.getElementById('f-hashtags').value = a.hashtags;
+}
+
+async function submitAddPost() {
+  const btn = document.getElementById('modal-submit');
+  const data = {
+    account:     document.getElementById('f-account').value,
+    date:        document.getElementById('f-date').value,
+    time:        document.getElementById('f-time').value,
+    category:    document.getElementById('f-category').value,
+    hook:        document.getElementById('f-hook').value,
+    description: document.getElementById('f-desc').value,
+    hashtags:    document.getElementById('f-hashtags').value,
+    videoUrl:    document.getElementById('f-video').value,
+  };
+
+  if (!data.account || !data.date) { toast('Account and date required'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Pushing…';
+
+  try {
+    await createPost(data);
+    closeModal();
+    toast('Post added to Notion ✓');
+    if (data.date === S.currentDate) {
+      await loadPostsForDate(S.currentDate);
+      renderContent();
+      renderAccounts();
+    }
+  } catch (e) {
+    toast('Error: ' + e.message, 4000);
+    btn.disabled = false;
+    btn.textContent = 'Push to Notion';
+  }
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+  document.getElementById('modal-overlay').style.display = 'none';
+  document.getElementById('modal').innerHTML = '';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HASHTAG GENERATOR (rule-based — Claude/Codex can improve via Notion push)
+// ─────────────────────────────────────────────────────────────────────────────
+async function generateHashtags(accountId, nom, produit) {
+  const n = (nom + ' ' + produit).toLowerCase();
+  let tags;
+  if      (n.includes('tea') || n.includes('thé'))   tags = ['#gift','#tea','#cadeau','#teatime','#maison'];
+  else if (n.includes('car') || n.includes('voiture'))tags = ['#car','#voiture','#decoration','#racing','#f1'];
+  else if (n.includes('ear'))                          tags = ['#ear','#oreille','#lavage','#routine','#douche'];
+  else if (n.includes('bag') || n.includes('sac'))    tags = ['#fashion','#handmade','#artisan','#sac','#bag'];
+  else if (n.includes('whisky') || n.includes('whiskey')) tags = ['#whiskey','#drinks','#cocktails','#gifts','#cocktaillovers'];
+  else if (n.includes('resin'))                        tags = ['#resinart','#resinlamp','#handmade','#artisanat','#homedecor'];
+  else                                                  tags = ['#viral','#trending','#shop','#lifestyle','#discover'];
+
+  const str = tags.join(' ');
+  try {
+    await notion('/v1/pages/' + accountId, 'PATCH', {
+      properties: { Hashtags: { rich_text: [{ text: { content: str } }] } }
+    });
+    await loadAccounts();
+    renderAccounts();
+    toast('Hashtags generated ✓');
+  } catch (e) {
+    toast('Generated: ' + str + ' (save to Notion failed)');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SETTINGS
+// ─────────────────────────────────────────────────────────────────────────────
+function showSettings() {
+  document.getElementById('modal').innerHTML = `
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Settings</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="settings-panel" style="padding:0;background:transparent;border:none;max-width:100%;margin:0">
+        <label>Notion Integration Token</label>
+        <input type="password" id="ss-token" value="${esc(ls('token') || '')}" autocomplete="off">
+        <label>CORS Proxy URL</label>
+        <input type="url" id="ss-proxy" value="${esc(ls('proxy') || '')}" placeholder="https://notion-proxy.xxx.workers.dev">
+        <p style="font-size:11px;color:var(--muted);line-height:1.6">
+          Proxy required for iPhone. Deploy <strong>cloudflare-worker.js</strong> from this repo to workers.cloudflare.com (free, 2 min).
+        </p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn-add" onclick="saveSettingsModal()">Save &amp; Reload</button>
+    </div>
+  </div>`;
+  document.getElementById('modal').style.display = 'flex';
+  document.getElementById('modal-overlay').style.display = 'block';
+}
+
+function saveSettingsModal() {
+  const token = document.getElementById('ss-token').value.trim();
+  const proxy = document.getElementById('ss-proxy').value.trim();
+  if (token) lsSet('token', token);
+  else lsDel('token');
+  if (proxy) lsSet('proxy', proxy);
+  else lsDel('proxy');
+  closeModal();
+  S.demo = false;
+  init();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SETUP
+// ─────────────────────────────────────────────────────────────────────────────
+function showSetupScreen() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('setup').style.display = 'flex';
+}
+
+function showAppScreen() {
+  document.getElementById('setup').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+}
+
+function saveSetup() {
+  const token = document.getElementById('s-token').value.trim();
+  const proxy = document.getElementById('s-proxy').value.trim();
+  if (!token) { toast('Token is required'); return; }
+  lsSet('token', token);
+  if (proxy) lsSet('proxy', proxy);
+  showAppScreen();
+  init();
+}
+
+function skipSetup() {
+  S.demo = true;
+  lsSet('demo', '1');
+  showAppScreen();
+  loadDemoData();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NAV
+// ─────────────────────────────────────────────────────────────────────────────
+async function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  S.activeTab = name;
+  ['accounts','content','week','month'].forEach(id => {
+    document.getElementById('tab-' + id).style.display = id === name ? '' : 'none';
+  });
+  if (name === 'content') {
+    document.getElementById('tab-content').innerHTML = '<div class="loading-state"><span class="spinner"></span>Loading…</div>';
+    try {
+      await loadPostsForDate(S.currentDate);
+      renderContent();
+    } catch (e) {
+      document.getElementById('tab-content').innerHTML = `<div class="error-state">${esc(e.message)}</div>`;
+    }
+  }
+}
+
+async function changeDate(delta) {
+  const d = new Date(S.currentDate + 'T12:00:00');
+  d.setDate(d.getDate() + delta);
+  S.currentDate = d.toISOString().slice(0, 10);
+  document.getElementById('tab-content').innerHTML = '<div class="loading-state"><span class="spinner"></span>Loading…</div>';
+  try {
+    await loadPostsForDate(S.currentDate);
+    renderContent();
+  } catch (e) {
+    document.getElementById('tab-content').innerHTML = `<div class="error-state">${esc(e.message)}</div>`;
+  }
+}
+
+async function refreshAll() {
+  toast('Refreshing…');
+  try {
+    await Promise.all([
+      loadAccounts(),
+      loadPostsForDate(S.currentDate),
+    ]);
+    renderAccounts();
+    if (S.activeTab === 'content') renderContent();
+    toast('Up to date ✓');
+  } catch (e) {
+    toast('Refresh failed: ' + e.message, 4000);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UTILS
+// ─────────────────────────────────────────────────────────────────────────────
+function esc(s) {
+  return (s || '').toString()
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function formatDateDisplay(iso) {
+  const d = new Date(iso + 'T12:00:00');
+  return d.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' });
+}
+
+function updateHeaderSub() {
+  const active = S.accounts.filter(a => !isToCreate(a.statut)).length;
+  const el = document.getElementById('header-sub');
+  if (el) el.textContent = active + ' active · tap ↻ to refresh';
+}
+
+function toast(msg, duration = 2500) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), duration);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DEMO DATA (offline preview)
+// ─────────────────────────────────────────────────────────────────────────────
+function loadDemoData() {
+  S.accounts = [
+    { id:'1', nom:'Tea Brand',        produit:'Infuseur a the',     statut:'Dormant',  followers:'5k+',  format:['PR'],      hashtags:'#gift #tea #cadeau #teatime #maison #pause',          telephone:'iPhone 15', frequence:'1-2 posts/jour', notes:'' },
+    { id:'2', nom:'Whisky -US',       produit:'Cocktail smoker',    statut:'Dormant',  followers:'45k+', format:['RP','PR','MX'], hashtags:'#whiskey #drinks #cocktails #gifts #cocktaillovers', telephone:'iPhone 16', frequence:'1 post/jour', notes:'' },
+    { id:'3', nom:'Handbag AI Founder',produit:'Sac a main AI',     statut:'Active',   followers:'1k+',  format:['PR','MX'], hashtags:'#faitmain #handmade #artisan #sac #bag',             telephone:'iPhone 15', frequence:'1-2 posts/jour', notes:'' },
+    { id:'4', nom:'Resin Art -US',    produit:'Resin lamps',        statut:'Warm-up',  followers:'New',  format:['RP','PR'], hashtags:'#resinart #resinlamp #handmade #animelamp #nba',     telephone:'TBD',       frequence:'1 post/jour', notes:'' },
+    { id:'5', nom:'Ear Cleaner',      produit:'Ear cleaner',        statut:'Dormant',  followers:'3k+',  format:['MX','PR'], hashtags:'#ear #oreille #lavage #routine #douche',             telephone:'iPhone 15', frequence:'1 post/jour', notes:'' },
+    { id:'6', nom:'Car Fan Brand',    produit:'Resin lamps voitures',statut:'Dormant', followers:'3k+',  format:['RP','MX'], hashtags:'#car #voiture #decoration #racing #f1',              telephone:'iPhone 15', frequence:'1 post/jour', notes:'' },
+    { id:'7', nom:'Art IA (iPhone 11)',produit:'Art IA',            statut:'Dormant',  followers:'0',    format:['PR'],      hashtags:'',                                                    telephone:'iPhone 11', frequence:'1-2 posts/jour', notes:'' },
+    { id:'8', nom:'TBD (iPhone 11)',  produit:'A determiner',       statut:'Dormant',  followers:'~100', format:['MX','PR'], hashtags:'',                                                    telephone:'iPhone 11', frequence:'1-2 posts/jour', notes:'' },
+  ];
+  S.todayCounts = { 'Handbag AI Founder': { total:1, posted:1 }, 'Resin Art -US': { total:1, posted:0 } };
+  renderAccounts();
+  updateHeaderSub();
+  document.getElementById('header-sub').textContent = '8 accounts (demo mode)';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────────────────────
+async function init() {
+  if (ls('demo') === '1' && !ls('token')) { S.demo = true; showAppScreen(); loadDemoData(); return; }
+  if (!ls('token')) { showSetupScreen(); return; }
+
+  showAppScreen();
+
+  try {
+    await Promise.all([
+      loadAccounts(),
+      loadPostsForDate(S.currentDate),
+    ]);
+    renderAccounts();
+  } catch (e) {
+    document.getElementById('tab-accounts').innerHTML = `
+    <div class="error-state">
+      Could not load data<br>
+      <small style="color:var(--muted)">${esc(e.message)}</small><br><br>
+      <button class="btn-secondary" onclick="showSettings()">⚙ Check Settings</button>
+    </div>`;
+    toast(e.message, 5000);
+  }
+}
+
+// Service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+
+init();
+</script>
+</body>
+</html>
