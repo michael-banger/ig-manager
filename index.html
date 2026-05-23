@@ -317,7 +317,7 @@ const DB = {
   accounts: 'a783ba9a8ec14ff5b127cb84a17788f8',
   posts:    'c6516213feb34049950edfcc5d50b8e5',
 };
-const APP_VERSION = '2026-05-24-v2';
+const APP_VERSION = '2026-05-24-v3';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STORAGE
@@ -834,7 +834,8 @@ function renderContent() {
     const emptyMsg = S.accountFilter
       ? `No posts for <strong>${esc(S.accountFilter)}</strong> on ${d}`
       : `No posts for ${d}`;
-    html += `<div class="empty-state">${emptyMsg}<br><br><button class="btn-add" onclick="openAddPost()">+ Add first post</button></div>`;
+    const addArg = S.accountFilter ? `'${esc(S.accountFilter)}'` : '';
+    html += `<div class="empty-state">${emptyMsg}<br><br><button class="btn-add" onclick="openAddPost(${addArg})">+ Add post</button></div>`;
   } else {
     const byTime = {};
     for (const p of visiblePosts) {
@@ -887,7 +888,13 @@ function openAddPost(accountName) {
       </div>
       <div>
         <label>Category</label>
-        <select id="f-category"><option>PR</option><option>RP</option><option>MX</option><option>GEN</option><option>EH</option></select>
+        <select id="f-category">
+          <option value="PR">Photo Reel (PR)</option>
+          <option value="RP">Repost (RP)</option>
+          <option value="MX">Mix (MX)</option>
+          <option value="GEN">AI Generated (GEN)</option>
+          <option value="EH">Emotion Hook (EH)</option>
+        </select>
       </div>
       <div>
         <label>Hook</label>
