@@ -317,7 +317,7 @@ const DB = {
   accounts: 'a783ba9a8ec14ff5b127cb84a17788f8',
   posts:    'c6516213feb34049950edfcc5d50b8e5',
 };
-const APP_VERSION = '2026-05-24-v1';
+const APP_VERSION = '2026-05-24-v2';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STORAGE
@@ -442,7 +442,7 @@ function loadAccounts() {
     { id:'369c3402-aa15-8116-b0a9-da85b9fde105', nom:'Handbag AI Founder FR',    produit:'Sac à main AI founder', statut:'Actif',          followers:'1k+',     format:['PR','MX'],      hashtags:'#faitmain #handmade #artisan #sac #bag',               telephone:'iPhone 15', frequence:'1-2/jour',  notes:'' },
     { id:'369c3402-aa15-817d-a11e-daac8e5716dc', nom:'iPhone 11 Art IA #1',      produit:'TBD',                   statut:'Jamais primé',   followers:'0',       format:['PR'],           hashtags:'',                                                     telephone:'iPhone 11', frequence:'1-2/jour',  notes:'' },
     { id:'369c3402-aa15-81f7-9644-d98befffc8eb', nom:'iPhone 11 Art IA #2',      produit:'TBD',                   statut:'Non primé',      followers:'~100',    format:['MX','PR'],      hashtags:'',                                                     telephone:'iPhone 11', frequence:'1-2/jour',  notes:'' },
-    { id:'369c3402-aa15-8194-81ef-dbf4c238ee5d', nom:'US Museum / Resin Art-US', produit:'Resin art lamps',       statut:'Warm-up',        followers:'Nouveau', format:['RP','PR'],      hashtags:'#resinart #resinlamp #handmade #animelamp #nba #lotr', telephone:'À préciser',frequence:'1/jour',    notes:'' },
+    { id:'369c3402-aa15-8194-81ef-dbf4c238ee5d', nom:'US Museum / Resin Art-US', produit:'Resin art lamps',       statut:'Warm-up',        followers:'Nouveau', format:['RP','PR'],      hashtags:'#resinart #art', telephone:'À préciser',frequence:'1/jour',    notes:'2 universal hashtags always present. Agents add 3 niche hashtags per post theme (NBA, LOTR, anime…). Max 5 total.' },
     // ── Accounts to Create ──────────────────────────────────────────────────
     { id:'tocreate-bbq',     nom:'BBQ Summer Shop',         produit:'Barbecue',          statut:'To Create', followers:'0', format:['PR','RP'], hashtags:'#barbecue #ete #summer #famille #friends',             telephone:'TBD', frequence:'1/jour', notes:'' },
     { id:'tocreate-vinyl',   nom:'Vinyls Magnetic Frigo',   produit:'Vinyl magnets',     statut:'To Create', followers:'0', format:['PR','RP'], hashtags:'#music #musique #party #vinyl',                        telephone:'TBD', frequence:'1/jour', notes:'' },
@@ -501,46 +501,69 @@ async function doValidate(pageId, btn) {
   }
 }
 
-function doDownload(pageId, videoUrl, btn) {
+async function doDownload(pageId, videoUrl, btn) {
   if (!videoUrl) { toast('No video URL yet — agent must push first'); return; }
 
   const orig = btn.innerHTML;
   btn.disabled = true;
-  btn.innerHTML = 'Opening…';
+  btn.innerHTML = '↓ Chargement…';
 
-  const reset = () => setTimeout(() => {
+  const reset = (delay = 2000) => setTimeout(() => {
     btn.disabled = false;
     btn.classList.remove('done');
     btn.innerHTML = orig;
     btn.blur();
-  }, 1800);
+  }, delay);
 
-  const markDone = (msg) => {
-    btn.innerHTML = 'Opened ✓';
+  // Strategy: fetch the actual video file, then share as a File object.
+  // iOS share sheet with a File shows "Enregistrer la vidéo" (Save Video).
+  // Sharing just a URL only shows a link — not useful for saving to Photos.
+  try {
+    const res = await fetch(videoUrl, { mode: 'cors' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const blob = await res.blob();
+    const file = new File([blob], 'reel.mp4', { type: 'video/mp4' });
+
+    if (navigator.canShare?.({ files: [file] })) {
+      await navigator.share({ files: [file], title: 'IG Reel' });
+      // User confirmed save or shared elsewhere
+      btn.innerHTML = 'Saved ✓';
+      btn.classList.add('done');
+      toast('Appuie sur "Enregistrer la vidéo"');
+      reset();
+      return;
+    }
+    // canShare not supported (desktop) — trigger direct download via blob URL
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = 'reel.mp4';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+    btn.innerHTML = 'Downloaded ✓';
     btn.classList.add('done');
-    toast(msg);
+    toast('Vidéo téléchargée');
     reset();
-  };
-
-  // iOS-safe: call navigator.share BEFORE any await/fetch so user gesture is still active
-  if (navigator.share) {
-    navigator.share({ url: videoUrl, title: 'IG Reel', text: 'Open in Safari → long-press video → Save' })
-      .then(() => markDone('Share sheet opened ↗'))
-      .catch(e => {
-        if (e.name === 'AbortError') {
-          reset(); // user dismissed share sheet — not an error
-        } else {
-          // Share failed (e.g. desktop Safari) — open URL directly
-          _openVideoUrl(videoUrl);
-          markDone('Opened in browser ↗');
-        }
-      });
     return;
-  }
 
-  // Fallback for browsers without Web Share API
-  _openVideoUrl(videoUrl);
-  markDone('Opened in browser ↗');
+  } catch (e) {
+    if (e.name === 'AbortError') {
+      // User dismissed the share sheet — silent reset, no error
+      btn.disabled = false;
+      btn.innerHTML = orig;
+      btn.blur();
+      return;
+    }
+    // Fetch failed OR user gesture expired before share (slow connection) → open URL in Safari
+    // User can long-press the video in Safari → "Enregistrer la vidéo"
+    _openVideoUrl(videoUrl);
+    btn.innerHTML = 'Ouvert ✓';
+    btn.classList.add('done');
+    toast('Ouvert dans Safari → appui long → Enregistrer la vidéo');
+    reset();
+  }
 }
 
 function _openVideoUrl(url) {
