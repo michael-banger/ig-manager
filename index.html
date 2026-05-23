@@ -159,9 +159,11 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .copy-btn:hover{border-color:var(--accent);color:var(--accent)}
 .copy-btn.description:hover{border-color:var(--green);color:var(--green)}
 .copy-btn.hashtags:hover{border-color:#8B5CF6;color:#8B5CF6}
+.copy-btn.copied{border-color:var(--green);color:var(--green)}
 .dl-btn{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:500;padding:4px 8px;border-radius:6px;cursor:pointer;border:1px solid var(--accent);background:var(--accent-dim);color:var(--accent);white-space:nowrap}
 .dl-btn:hover{background:var(--accent);color:#fff}
 .dl-btn:disabled{opacity:.5;cursor:default}
+.dl-btn.done{border-color:var(--green);background:rgba(16,185,129,.12);color:var(--green)}
 .validate-btn{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:500;padding:4px 8px;border-radius:6px;cursor:pointer;border:1px solid var(--green);background:rgba(16,185,129,.1);color:var(--green);white-space:nowrap}
 .validate-btn:hover{background:var(--green);color:#0a0a0a}
 .validate-btn:disabled{opacity:.5;cursor:default}
@@ -472,23 +474,50 @@ async function doDownload(pageId, videoUrl, btn) {
     toast('No video URL yet — agent must push first');
     return;
   }
-  window.open(videoUrl, '_blank');
-
+  const orig = btn.innerHTML;
   btn.disabled = true;
+  btn.innerHTML = 'Preparing…';
+
+  let opened = false;
   try {
-    await notion('/v1/pages/' + pageId, 'PATCH', {
-      properties: { Status: { select: { name: 'Posted' } } }
-    });
-    const card = btn.closest('.post-card');
-    card.classList.remove('pending', 'validated');
-    card.classList.add('posted');
-    const pill = card.querySelector('.post-status-pill');
-    pill.textContent = 'Posted';
-    pill.className = 'post-status-pill psp-posted';
-    btn.textContent = 'Downloaded ✓';
-    toast('Saved to Photos · Status → Posted');
+    const res = await fetch(videoUrl, { mode: 'cors' });
+    if (!res.ok) throw new Error('Video fetch failed');
+    const blob = await res.blob();
+    const file = new File([blob], 'ig-reel.mp4', { type: 'video/mp4' });
+
+    if (navigator.canShare?.({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: 'Instagram Reel',
+        text: 'Save this video to Photos, then post manually.',
+      });
+      opened = true;
+    } else {
+      const objectUrl = URL.createObjectURL(blob);
+      window.open(objectUrl, '_blank');
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 60000);
+      opened = true;
+    }
   } catch (e) {
-    toast('Downloaded — could not update status: ' + e.message);
+    window.open(videoUrl, '_blank');
+    opened = true;
+  }
+
+  try {
+    if (opened) {
+      btn.classList.add('done');
+      btn.innerHTML = 'Opened ✓';
+      toast('Video opened — use Share → Save Video');
+    }
+  } catch (e) {
+    toast('Video opened');
+  } finally {
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.classList.remove('done');
+      btn.innerHTML = orig;
+      btn.blur();
+    }, 1600);
   }
 }
 
@@ -516,11 +545,38 @@ async function createPost(data) {
 // ─────────────────────────────────────────────────────────────────────────────
 // COPY
 // ─────────────────────────────────────────────────────────────────────────────
-function copyText(text, btn) {
-  navigator.clipboard?.writeText(text).catch(() => {});
+async function copyText(text, btn) {
+  const value = text || '';
+  let copied = false;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value);
+      copied = true;
+    }
+  } catch (e) {}
+
+  if (!copied) {
+    const ta = document.createElement('textarea');
+    ta.value = value;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.top = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);
+    try { copied = document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
   const orig = btn.innerHTML;
-  btn.innerHTML = '<span style="color:var(--green)">Copied!</span>';
-  setTimeout(() => { btn.innerHTML = orig; }, 1100);
+  btn.classList.add('copied');
+  btn.innerHTML = copied ? 'Copied ✓' : 'Tap-hold to copy';
+  toast(copied ? 'Copied ✓' : 'Copy failed — tap and hold text');
+  setTimeout(() => {
+    btn.classList.remove('copied');
+    btn.innerHTML = orig;
+    btn.blur();
+  }, 1100);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -649,11 +705,10 @@ function categoryEmoji(cat) {
 function renderPostCard(p) {
   const sClass  = p.status === 'Validated' ? 'validated' : p.status === 'Posted' ? 'posted' : 'pending';
   const pClass  = p.status === 'Validated' ? 'psp-validated' : p.status === 'Posted' ? 'psp-posted' : 'psp-pending';
-  const descFull = (p.description || '') + (p.hashtags ? '\n' + p.hashtags : '');
 
   let actions = '';
   if (p.hook)          actions += `<button class="copy-btn" onclick="copyText(${JSON.stringify(p.hook)},this)">⧉ Hook</button>`;
-  if (descFull.trim()) actions += `<button class="copy-btn description" onclick="copyText(${JSON.stringify(descFull)},this)">⧉ Desc+#</button>`;
+  if (p.description)   actions += `<button class="copy-btn description" onclick="copyText(${JSON.stringify(p.description)},this)">⧉ Desc</button>`;
   if (p.hashtags)      actions += `<button class="copy-btn hashtags" onclick="copyText(${JSON.stringify(p.hashtags)},this)">⧉ #Tags</button>`;
   if (p.status === 'Pending') actions += `<button class="validate-btn" onclick="doValidate('${p.id}',this)">✓ Validate</button>`;
   actions += `<button class="dl-btn" onclick="doDownload('${p.id}',${JSON.stringify(p.videoUrl||'')},this)">↓ Video</button>`;

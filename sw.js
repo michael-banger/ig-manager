@@ -1,4 +1,4 @@
-const CACHE = 'ig-manager-v1';
+const CACHE = 'ig-manager-v2';
 const ASSETS = ['/ig-manager/', '/ig-manager/index.html', '/ig-manager/manifest.json', '/ig-manager/icon.svg'];
 
 self.addEventListener('install', e => {
