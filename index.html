@@ -317,7 +317,7 @@ const DB = {
   accounts: 'a783ba9a8ec14ff5b127cb84a17788f8',
   posts:    'c6516213feb34049950edfcc5d50b8e5',
 };
-const APP_VERSION = '2026-05-24-v4';
+const APP_VERSION = '2026-06-01-v5';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STORAGE
@@ -342,6 +342,25 @@ const S = {
 // Clip buffer: avoids HTML-attribute escaping issues with quotes/special chars in post text
 // Keys: "postId:hook" | "postId:desc" | "postId:tags" | "postId:vid"
 const _clips = {};
+
+// Video prefetch cache: postId -> { state:'loading'|'ready'|'error', file?:File }
+// Prefetching the blob BEFORE the user taps Download fixes the intermittent (≈1/4)
+// iOS failure where the share sheet is refused because the user-gesture activation
+// expired while waiting for a slow fetch. With the File already in memory, the share
+// fires instantly inside the tap gesture.
+const _videoCache = {};
+
+function prefetchVideo(postId, url) {
+  if (!url) return;
+  if (_videoCache[postId] && _videoCache[postId].state !== 'error') return;
+  _videoCache[postId] = { state: 'loading' };
+  fetch(url, { mode: 'cors' })
+    .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.blob(); })
+    .then(blob => {
+      _videoCache[postId] = { state: 'ready', file: new File([blob], 'reel.mp4', { type: 'video/mp4' }) };
+    })
+    .catch(() => { _videoCache[postId] = { state: 'error' }; });
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // NOTION API
@@ -501,13 +520,36 @@ async function doValidate(pageId, btn) {
   }
 }
 
+// Deliver a File via the iOS share sheet (Save Video) or a desktop blob download.
+function _deliverFile(file, btn, reset) {
+  if (navigator.canShare?.({ files: [file] })) {
+    return navigator.share({ files: [file], title: 'IG Reel' }).then(() => {
+      btn.innerHTML = 'Saved ✓';
+      btn.classList.add('done');
+      toast('Appuie sur "Enregistrer la vidéo"');
+      reset();
+    });
+  }
+  // Desktop: trigger direct download via blob URL
+  const blobUrl = URL.createObjectURL(file);
+  const a = document.createElement('a');
+  a.href = blobUrl;
+  a.download = 'reel.mp4';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+  btn.innerHTML = 'Downloaded ✓';
+  btn.classList.add('done');
+  toast('Vidéo téléchargée');
+  reset();
+  return Promise.resolve();
+}
+
 async function doDownload(pageId, videoUrl, btn) {
   if (!videoUrl) { toast('No video URL yet — agent must push first'); return; }
 
   const orig = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '↓ Chargement…';
-
   const reset = (delay = 2000) => setTimeout(() => {
     btn.disabled = false;
     btn.classList.remove('done');
@@ -515,49 +557,38 @@ async function doDownload(pageId, videoUrl, btn) {
     btn.blur();
   }, delay);
 
-  // Strategy: fetch the actual video file, then share as a File object.
-  // iOS share sheet with a File shows "Enregistrer la vidéo" (Save Video).
-  // Sharing just a URL only shows a link — not useful for saving to Photos.
+  // FAST PATH: blob already prefetched → share instantly INSIDE the tap gesture.
+  // This is what fixes the intermittent (≈1/4) iOS "can't save" bug: no awaited
+  // network call between the tap and navigator.share(), so the gesture never expires.
+  const cached = _videoCache[pageId];
+  if (cached && cached.state === 'ready' && cached.file) {
+    btn.disabled = true;
+    try {
+      await _deliverFile(cached.file, btn, reset);
+    } catch (e) {
+      if (e.name === 'AbortError') { btn.disabled = false; btn.innerHTML = orig; btn.blur(); return; }
+      _openVideoUrl(videoUrl);
+      btn.innerHTML = 'Ouvert ✓'; btn.classList.add('done');
+      toast('Ouvert dans Safari → appui long → Enregistrer la vidéo'); reset();
+    }
+    return;
+  }
+
+  // SLOW PATH: not prefetched yet (or failed). Fetch now; if the gesture expires
+  // before share, fall back to opening the URL in Safari.
+  btn.disabled = true;
+  btn.innerHTML = '↓ Chargement…';
+  // Kick a prefetch so a second tap hits the fast path.
+  prefetchVideo(pageId, videoUrl);
   try {
     const res = await fetch(videoUrl, { mode: 'cors' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    const blob = await res.blob();
-    const file = new File([blob], 'reel.mp4', { type: 'video/mp4' });
-
-    if (navigator.canShare?.({ files: [file] })) {
-      await navigator.share({ files: [file], title: 'IG Reel' });
-      // User confirmed save or shared elsewhere
-      btn.innerHTML = 'Saved ✓';
-      btn.classList.add('done');
-      toast('Appuie sur "Enregistrer la vidéo"');
-      reset();
-      return;
-    }
-    // canShare not supported (desktop) — trigger direct download via blob URL
-    const blobUrl = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = blobUrl;
-    a.download = 'reel.mp4';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
-    btn.innerHTML = 'Downloaded ✓';
-    btn.classList.add('done');
-    toast('Vidéo téléchargée');
-    reset();
-    return;
-
+    const file = new File([await res.blob()], 'reel.mp4', { type: 'video/mp4' });
+    _videoCache[pageId] = { state: 'ready', file };
+    await _deliverFile(file, btn, reset);
   } catch (e) {
-    if (e.name === 'AbortError') {
-      // User dismissed the share sheet — silent reset, no error
-      btn.disabled = false;
-      btn.innerHTML = orig;
-      btn.blur();
-      return;
-    }
-    // Fetch failed OR user gesture expired before share (slow connection) → open URL in Safari
-    // User can long-press the video in Safari → "Enregistrer la vidéo"
+    if (e.name === 'AbortError') { btn.disabled = false; btn.innerHTML = orig; btn.blur(); return; }
+    // Fetch failed (CORS/network) OR gesture expired before share → open in Safari.
     _openVideoUrl(videoUrl);
     btn.innerHTML = 'Ouvert ✓';
     btn.classList.add('done');
@@ -769,6 +800,7 @@ function renderPostCard(p) {
   _clips[p.id + ':desc'] = descFull;
   _clips[p.id + ':tags'] = p.hashtags || '';
   _clips[p.id + ':vid']  = p.videoUrl || '';
+  if (p.videoUrl) prefetchVideo(p.id, p.videoUrl); // warm the cache so Download is instant
 
   let actions = '';
   if (p.hook)          actions += `<button class="copy-btn" onclick="copyText(_clips['${p.id}:hook'],this)">⧉ Hook</button>`;
