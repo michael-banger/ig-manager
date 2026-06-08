@@ -1,4 +1,4 @@
-const CACHE = 'ig-manager-v9';
+const CACHE = 'ig-manager-v10';
 const ASSETS = ['/ig-manager/', '/ig-manager/index.html', '/ig-manager/manifest.json', '/ig-manager/icon.svg'];
 
 self.addEventListener('install', e => {
@@ -14,25 +14,14 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
+  // Notion API: never touch.
   if (e.request.url.includes('api.notion.com')) return;
 
-  // MEDIA (videos/thumbs): STALE-WHILE-REVALIDATE.
-  // Serve the cached copy INSTANTLY (keeps the iOS share/download gesture alive = fast
-  // download), and refresh the cache in the background so a re-pushed file self-heals on
-  // the next load. This fixes BOTH bugs: v7 cache-first served a stale MUTED file forever;
-  // v8 network-first made downloads fail (fetching 4MB on tap expired the share gesture).
-  if (e.request.url.includes('/videos/') || e.request.url.includes('/thumbs/')) {
-    e.respondWith(caches.open(CACHE).then(c =>
-      c.match(e.request).then(cached => {
-        const net = fetch(e.request).then(res => {
-          if (res && res.ok && e.request.method === 'GET') c.put(e.request, res.clone());
-          return res;
-        }).catch(() => cached);
-        return cached || net;
-      })
-    ));
-    return;
-  }
+  // VIDEOS / THUMBS: the Service Worker does NOT intercept them at all.
+  // The browser fetches them natively (correct range handling, fast download, no stale
+  // cache). This is deliberate: SW interception of media broke iPhone downloads and
+  // served stale muted files. Keep media 100% out of the SW.
+  if (e.request.url.includes('/videos/') || e.request.url.includes('/thumbs/')) return;
 
   // App shell HTML: network-first (keep fresh), fallback to cache offline.
   if (e.request.mode === 'navigate' || e.request.url.includes('/ig-manager/index.html')) {
@@ -46,7 +35,7 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Other static assets: cache-first.
+  // Other static assets (icons, manifest): cache-first.
   e.respondWith(
     caches.match(e.request).then(r => r || fetch(e.request).then(res => {
       if (res.ok && e.request.method === 'GET') {
