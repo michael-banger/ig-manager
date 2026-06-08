@@ -1,4 +1,4 @@
-const CACHE = 'ig-manager-v8';
+const CACHE = 'ig-manager-v9';
 const ASSETS = ['/ig-manager/', '/ig-manager/index.html', '/ig-manager/manifest.json', '/ig-manager/icon.svg'];
 
 self.addEventListener('install', e => {
@@ -16,11 +16,21 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.url.includes('api.notion.com')) return;
 
-  // MEDIA (videos/thumbs): NETWORK-FIRST. A re-pushed file must never be served
-  // stale from cache (that was the "downloaded video has no audio" bug: an old
-  // muted version stayed cached under the same URL). Fall back to cache only offline.
+  // MEDIA (videos/thumbs): STALE-WHILE-REVALIDATE.
+  // Serve the cached copy INSTANTLY (keeps the iOS share/download gesture alive = fast
+  // download), and refresh the cache in the background so a re-pushed file self-heals on
+  // the next load. This fixes BOTH bugs: v7 cache-first served a stale MUTED file forever;
+  // v8 network-first made downloads fail (fetching 4MB on tap expired the share gesture).
   if (e.request.url.includes('/videos/') || e.request.url.includes('/thumbs/')) {
-    e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+    e.respondWith(caches.open(CACHE).then(c =>
+      c.match(e.request).then(cached => {
+        const net = fetch(e.request).then(res => {
+          if (res && res.ok && e.request.method === 'GET') c.put(e.request, res.clone());
+          return res;
+        }).catch(() => cached);
+        return cached || net;
+      })
+    ));
     return;
   }
 
