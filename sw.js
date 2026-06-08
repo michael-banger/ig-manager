@@ -1,4 +1,4 @@
-const CACHE = 'ig-manager-v10';
+const CACHE = 'ig-manager-v11';
 const ASSETS = ['/ig-manager/', '/ig-manager/index.html', '/ig-manager/manifest.json', '/ig-manager/icon.svg'];
 
 self.addEventListener('install', e => {
@@ -16,6 +16,10 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   // Notion API: never touch.
   if (e.request.url.includes('api.notion.com')) return;
+
+  // DATA FEED: never intercept the static posts feed. The app loads it with a
+  // cache-busting query + no-store; the SW must never serve a stale posts.json.
+  if (e.request.url.includes('/data/')) return;
 
   // VIDEOS / THUMBS: the Service Worker does NOT intercept them at all.
   // The browser fetches them natively (correct range handling, fast download, no stale

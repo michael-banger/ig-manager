@@ -317,7 +317,7 @@ const DB = {
   accounts: 'a783ba9a8ec14ff5b127cb84a17788f8',
   posts:    'c6516213feb34049950edfcc5d50b8e5',
 };
-const APP_VERSION = '2026-06-01-v5';
+const APP_VERSION = '2026-06-08-v11';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STORAGE
@@ -325,6 +325,14 @@ const APP_VERSION = '2026-06-01-v5';
 const ls  = k => localStorage.getItem('igm_' + k);
 const lsSet = (k, v) => localStorage.setItem('igm_' + k, v);
 const lsDel = k => localStorage.removeItem('igm_' + k);
+
+// A valid CORS proxy must be an http(s) URL. Anything else (a Notion token, junk)
+// is rejected so it can never produce an invalid fetch URL.
+function isValidProxy(v) {
+  if (!v) return false;
+  try { const u = new URL(v); return u.protocol === 'http:' || u.protocol === 'https:'; }
+  catch (e) { return false; }
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STATE
@@ -369,9 +377,12 @@ async function notion(path, method = 'GET', body = null) {
   if (S.demo) throw new Error('Demo mode — configure token in Settings');
 
   const token = ls('token');
-  const proxy = ls('proxy');
+  // Guard: a non-URL proxy value (e.g. a Notion token pasted by mistake) is IGNORED
+  // instead of being concatenated into an invalid URL. That bug ("The string did not
+  // match the expected pattern") can never brick the app again.
+  const proxy = isValidProxy(ls('proxy')) ? ls('proxy') : null;
 
-  if (!token) { showSetupScreen(); throw new Error('No token configured'); }
+  if (!token) { throw new Error('No token configured — add it in Settings (⚙) for writes'); }
 
   const base = proxy ? proxy.replace(/\/$/, '') : 'https://api.notion.com';
   const url  = base + path;
@@ -479,13 +490,36 @@ function loadAccounts() {
   updateHeaderSub();
 }
 
-async function loadPostsForDate(date) {
-  const data = await notion('/v1/databases/' + DB.posts + '/query', 'POST', {
-    filter: { property: 'Date', date: { equals: date } },
-    sorts: [{ property: 'Time', direction: 'ascending' }],
-    page_size: 100,
-  });
-  S.posts = data.results.map(parsePost);
+// Same-origin static feed written by Hermès (publish-to-app.py + a VPS cron).
+// PRIMARY read path: no token, no proxy, no CORS → the app can NEVER be bricked
+// by a bad Settings value (e.g. a Notion token pasted into the proxy field).
+// Notion is only a fallback used when this file is not present yet.
+let _staticPostsCache = null;
+async function loadStaticPosts(force = false) {
+  if (_staticPostsCache && !force) return _staticPostsCache;
+  const res = await fetch('data/posts.json?v=' + Date.now(), { cache: 'no-store' });
+  if (!res.ok) throw new Error('static-feed ' + res.status);
+  const json = await res.json();
+  _staticPostsCache = Array.isArray(json) ? json : (json.posts || []);
+  return _staticPostsCache;
+}
+
+async function loadPostsForDate(date, force = false) {
+  let posts;
+  try {
+    // Static same-origin feed first — works with zero token/proxy.
+    posts = (await loadStaticPosts(force)).filter(p => p.date === date);
+  } catch (eStatic) {
+    // No static feed → live Notion (requires a valid token + proxy URL).
+    const data = await notion('/v1/databases/' + DB.posts + '/query', 'POST', {
+      filter: { property: 'Date', date: { equals: date } },
+      sorts: [{ property: 'Time', direction: 'ascending' }],
+      page_size: 100,
+    });
+    posts = data.results.map(parsePost);
+  }
+  posts.sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+  S.posts = posts;
 
   S.todayCounts = {};
   for (const p of S.posts) {
@@ -522,8 +556,12 @@ async function doValidate(pageId, btn) {
 
 // Deliver a File via the iOS share sheet (Save Video) or a desktop blob download.
 function _deliverFile(file, btn, reset) {
+  // iOS gotcha: share files ALONE. Passing `title`/`text` alongside `files` makes
+  // iOS treat it as a text share and silently drop the video — the share sheet shows
+  // "Enregistrer la vidéo" but nothing lands in the camera roll. canShare is checked
+  // with the SAME payload we share (files only) so the two never disagree.
   if (navigator.canShare?.({ files: [file] })) {
-    return navigator.share({ files: [file], title: 'IG Reel' }).then(() => {
+    return navigator.share({ files: [file] }).then(() => {
       btn.innerHTML = 'Saved ✓';
       btn.classList.add('done');
       toast('Appuie sur "Enregistrer la vidéo"');
@@ -1054,8 +1092,16 @@ function showSettings() {
 }
 
 function saveSettingsModal() {
-  const token = document.getElementById('ss-token').value.trim();
-  const proxy = document.getElementById('ss-proxy').value.trim();
+  let token = document.getElementById('ss-token').value.trim();
+  let proxy = document.getElementById('ss-proxy').value.trim();
+  // Self-heal: a Notion token pasted into the proxy field used to brick the app.
+  // If the proxy isn't a real URL, drop it; if it looks like a token and the token
+  // field is empty, move it where it belongs.
+  if (proxy && !isValidProxy(proxy)) {
+    if (/^(ntn_|secret_)/.test(proxy) && !token) { token = proxy; }
+    proxy = '';
+    toast('Proxy ignoré (pas une URL valide)');
+  }
   if (token) lsSet('token', token);
   else lsDel('token');
   if (proxy) lsSet('proxy', proxy);
@@ -1079,11 +1125,17 @@ function showAppScreen() {
 }
 
 function saveSetup() {
-  const token = document.getElementById('s-token').value.trim();
-  const proxy = document.getElementById('s-proxy').value.trim();
+  let token = document.getElementById('s-token').value.trim();
+  let proxy = document.getElementById('s-proxy').value.trim();
+  if (proxy && !isValidProxy(proxy)) {
+    if (/^(ntn_|secret_)/.test(proxy) && !token) { token = proxy; }
+    proxy = '';
+    toast('Proxy ignoré (pas une URL valide)');
+  }
   if (!token) { toast('Token is required'); return; }
   lsSet('token', token);
   if (proxy) lsSet('proxy', proxy);
+  else lsDel('proxy');
   showAppScreen();
   init();
 }
@@ -1248,23 +1300,18 @@ function loadDemoData() {
 // INIT
 // ─────────────────────────────────────────────────────────────────────────────
 async function init() {
-  if (ls('demo') === '1' && !ls('token')) { S.demo = true; showAppScreen(); loadDemoData(); return; }
-  if (!ls('token')) { showSetupScreen(); return; }
-
   showAppScreen();
-
+  loadAccounts();
+  renderAccounts();             // hardcoded accounts always render — never a blank screen
   try {
-    loadAccounts();
-    await loadPostsForDate(S.currentDate);
-    renderAccounts();
+    await loadPostsForDate(S.currentDate, true);   // static-first: no token/proxy needed
+    S.demo = false;
+    renderAccounts();           // re-render with today's counts
   } catch (e) {
-    document.getElementById('tab-accounts').innerHTML = `
-    <div class="error-state">
-      Could not load data<br>
-      <small style="color:var(--muted)">${esc(e.message)}</small><br><br>
-      <button class="btn-secondary" onclick="showSettings()">⚙ Check Settings</button>
-    </div>`;
-    toast(e.message, 5000);
+    // Static feed unavailable AND Notion fallback failed.
+    if (ls('demo') === '1' && !ls('token')) { S.demo = true; loadDemoData(); return; }
+    // App stays usable (accounts visible); surface a non-blocking note instead of bricking.
+    toast('Posts indisponibles: ' + e.message, 4000);
   }
 }
 
