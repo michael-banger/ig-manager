@@ -317,7 +317,7 @@ const DB = {
   accounts: 'a783ba9a8ec14ff5b127cb84a17788f8',
   posts:    'c6516213feb34049950edfcc5d50b8e5',
 };
-const APP_VERSION = '2026-06-09-v12';
+const APP_VERSION = '2026-06-09-v13';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STORAGE
@@ -638,14 +638,13 @@ async function doDownload(pageId, videoUrl, btn) {
 }
 
 function _openVideoUrl(url) {
-  // Anchor click is more reliable than window.open in standalone PWA mode
-  const a = document.createElement('a');
-  a.href = url;
-  a.target = '_blank';
-  a.rel = 'noopener';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  // Navigate the top-level page straight to the .mp4 so iOS opens its NATIVE fullscreen
+  // player, where the system Share button → "Enregistrer la vidéo" reliably saves to
+  // Photos. The cache-buster (?dl=timestamp) dodges any STALE Service Worker that might
+  // still intercept /videos/ on the device and break playback (the real cause of the
+  // "broken player" screen — files are healthy 200/video-mp4 on the server).
+  const u = url + (url.includes('?') ? '&' : '?') + 'dl=' + Date.now();
+  window.location.href = u;
 }
 
 async function createPost(data) {
