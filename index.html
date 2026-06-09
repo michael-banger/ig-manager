@@ -456,7 +456,14 @@ function parsePost(p) {
     hashtags:     prop(p, 'Hashtags'),
     videoUrl:     prop(p, 'Video URL'),
     thumbnailUrl: prop(p, 'Thumbnail URL'),
+    notes:        prop(p, 'Notes'),
   };
+}
+
+function extractNohookUrl(notes) {
+  if (!notes) return null;
+  const m = notes.match(/SANS-HOOK:\s*(https?:\/\/\S+)/i);
+  return m ? m[1] : null;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -838,7 +845,8 @@ function renderPostCard(p) {
   _clips[p.id + ':hook'] = p.hook || '';
   _clips[p.id + ':desc'] = descFull;
   _clips[p.id + ':tags'] = p.hashtags || '';
-  _clips[p.id + ':vid']  = p.videoUrl || '';
+  _clips[p.id + ':vid']    = p.videoUrl || '';
+  _clips[p.id + ':nohook'] = extractNohookUrl(p.notes) || '';
   // No prefetch: the iOS download path opens the native player directly (no blob/share),
   // so pre-fetching every video would just waste the phone's data for nothing.
 
@@ -848,6 +856,7 @@ function renderPostCard(p) {
   if (p.hashtags)      actions += `<button class="copy-btn hashtags" onclick="copyText(_clips['${p.id}:tags'],this)">⧉ #Tags</button>`;
   if (p.status === 'Pending') actions += `<button class="validate-btn" onclick="doValidate('${p.id}',this)">✓ Validate</button>`;
   actions += `<button class="dl-btn" onclick="doDownload('${p.id}',_clips['${p.id}:vid'],this)">↓ Video</button>`;
+  if (_clips[p.id + ':nohook']) actions += `<button class="dl-btn" style="opacity:.75" onclick="doDownload('${p.id}',_clips['${p.id}:nohook'],this)">↓ Sans hook</button>`;
 
   return `
   <div class="post-card ${sClass}" data-id="${p.id}">
