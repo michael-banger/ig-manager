@@ -317,7 +317,7 @@ const DB = {
   accounts: 'a783ba9a8ec14ff5b127cb84a17788f8',
   posts:    'c6516213feb34049950edfcc5d50b8e5',
 };
-const APP_VERSION = '2026-06-08-v11';
+const APP_VERSION = '2026-06-09-v12';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STORAGE
@@ -585,52 +585,54 @@ function _deliverFile(file, btn, reset) {
 }
 
 async function doDownload(pageId, videoUrl, btn) {
-  if (!videoUrl) { toast('No video URL yet — agent must push first'); return; }
+  if (!videoUrl) { toast('Pas encore de vidéo — l\'agent doit pousser d\'abord'); return; }
 
   const orig = btn.innerHTML;
-  const reset = (delay = 2000) => setTimeout(() => {
+  const reset = (delay = 2500) => setTimeout(() => {
     btn.disabled = false;
     btn.classList.remove('done');
     btn.innerHTML = orig;
     btn.blur();
   }, delay);
 
-  // FAST PATH: blob already prefetched → share instantly INSIDE the tap gesture.
-  // This is what fixes the intermittent (≈1/4) iOS "can't save" bug: no awaited
-  // network call between the tap and navigator.share(), so the gesture never expires.
-  const cached = _videoCache[pageId];
-  if (cached && cached.state === 'ready' && cached.file) {
+  // iOS / iPadOS: open the REAL video in the native player. There the player's own
+  // Share button → "Enregistrer la vidéo" reliably saves to Photos.
+  // We deliberately DO NOT use navigator.share({files}) on iOS: it showed the
+  // "Enregistrer la vidéo" sheet but nothing landed in the camera roll (the regression).
+  // Opening the .mp4 directly is the OS-native path that has always worked.
+  const isApple = /iP(hone|ad|od)/.test(navigator.userAgent) ||
+                  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (isApple || !navigator.canShare) {
+    _openVideoUrl(videoUrl);
     btn.disabled = true;
-    try {
-      await _deliverFile(cached.file, btn, reset);
-    } catch (e) {
-      if (e.name === 'AbortError') { btn.disabled = false; btn.innerHTML = orig; btn.blur(); return; }
-      _openVideoUrl(videoUrl);
-      btn.innerHTML = 'Ouvert ✓'; btn.classList.add('done');
-      toast('Ouvert dans Safari → appui long → Enregistrer la vidéo'); reset();
-    }
+    btn.innerHTML = 'Ouvert ✓';
+    btn.classList.add('done');
+    toast('Lecteur ouvert → bouton Partager ⬆ → « Enregistrer la vidéo »');
+    reset();
     return;
   }
 
-  // SLOW PATH: not prefetched yet (or failed). Fetch now; if the gesture expires
-  // before share, fall back to opening the URL in Safari.
+  // Desktop (Chrome/Firefox/Edge): direct file download via blob.
   btn.disabled = true;
-  btn.innerHTML = '↓ Chargement…';
-  // Kick a prefetch so a second tap hits the fast path.
-  prefetchVideo(pageId, videoUrl);
+  btn.innerHTML = '↓ Téléchargement…';
   try {
     const res = await fetch(videoUrl, { mode: 'cors' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    const file = new File([await res.blob()], 'reel.mp4', { type: 'video/mp4' });
-    _videoCache[pageId] = { state: 'ready', file };
-    await _deliverFile(file, btn, reset);
+    const blobUrl = URL.createObjectURL(await res.blob());
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = 'reel.mp4';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+    btn.innerHTML = 'Téléchargé ✓';
+    btn.classList.add('done');
+    reset();
   } catch (e) {
-    if (e.name === 'AbortError') { btn.disabled = false; btn.innerHTML = orig; btn.blur(); return; }
-    // Fetch failed (CORS/network) OR gesture expired before share → open in Safari.
     _openVideoUrl(videoUrl);
     btn.innerHTML = 'Ouvert ✓';
     btn.classList.add('done');
-    toast('Ouvert dans Safari → appui long → Enregistrer la vidéo');
     reset();
   }
 }
@@ -838,7 +840,8 @@ function renderPostCard(p) {
   _clips[p.id + ':desc'] = descFull;
   _clips[p.id + ':tags'] = p.hashtags || '';
   _clips[p.id + ':vid']  = p.videoUrl || '';
-  if (p.videoUrl) prefetchVideo(p.id, p.videoUrl); // warm the cache so Download is instant
+  // No prefetch: the iOS download path opens the native player directly (no blob/share),
+  // so pre-fetching every video would just waste the phone's data for nothing.
 
   let actions = '';
   if (p.hook)          actions += `<button class="copy-btn" onclick="copyText(_clips['${p.id}:hook'],this)">⧉ Hook</button>`;
