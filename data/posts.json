@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-12T13:25:53.767885+00:00",
-  "count": 29,
+  "generated_at": "2026-06-12T21:42:41.458069+00:00",
+  "count": 30,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -465,6 +465,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/handbag-ai-founder-fr/handbag-ai-2026-06-11-final/HANDBAG-AI-FOUNDER-FR-HANDBAG-AI-2026-06-11-FINAL-FINAL.jpg",
       "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/handbag-ai-founder-fr/handbag-ai-2026-06-11-final/HANDBAG-AI-FOUNDER-FR-HANDBAG-AI-2026-06-11-FINAL-NOHOOK.mp4",
       "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/handbag-ai-founder-fr/handbag-ai-2026-06-11-final/HANDBAG-AI-FOUNDER-FR-HANDBAG-AI-2026-06-11-FINAL-NOHOOK.mp4"
+    },
+    {
+      "id": "37dc3402-aa15-815b-936c-ec40137fbb56",
+      "name": "Tea Brand FR — 2026-06-13",
+      "account": "Tea Brand FR",
+      "date": "2026-06-13",
+      "time": "09:00",
+      "category": "GEN",
+      "status": "Pending",
+      "hook": "Elle transforme l’argile en pot trop mignon",
+      "description": "Une petite pièce faite à la main, du modelage jusqu’au rebord de fenêtre. 🪴",
+      "hashtags": "#poterie #faitmain #ceramique #decointerieur #artisanat",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/tea-brand-fr/poterie-post-1/TEA-BRAND-FR-POTERIE-POST-1-FINAL.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/tea-brand-fr/poterie-post-1/TEA-BRAND-FR-POTERIE-POST-1-FINAL.jpg",
+      "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/tea-brand-fr/poterie-post-1/TEA-BRAND-FR-POTERIE-POST-1-NOHOOK.mp4",
+      "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/tea-brand-fr/poterie-post-1/TEA-BRAND-FR-POTERIE-POST-1-NOHOOK.mp4"
     }
   ]
 }
