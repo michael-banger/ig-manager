@@ -317,7 +317,7 @@ const DB = {
   accounts: 'a783ba9a8ec14ff5b127cb84a17788f8',
   posts:    'c6516213feb34049950edfcc5d50b8e5',
 };
-const APP_VERSION = '2026-06-09-v13';
+const APP_VERSION = '2026-06-12-v15';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STORAGE
@@ -351,23 +351,25 @@ const S = {
 // Keys: "postId:hook" | "postId:desc" | "postId:tags" | "postId:vid"
 const _clips = {};
 
-// Video prefetch cache: postId -> { state:'loading'|'ready'|'error', file?:File }
+// Video prefetch cache: url -> Promise<File>
 // Prefetching the blob BEFORE the user taps Download fixes the intermittent (≈1/4)
 // iOS failure where the share sheet is refused because the user-gesture activation
 // expired while waiting for a slow fetch. With the File already in memory, the share
-// fires instantly inside the tap gesture.
+// fires instantly inside the tap gesture. Keyed by URL so the "↓ Video" and
+// "↓ Sans hook" buttons each get their own file. A failed fetch clears the slot
+// so the next tap retries instead of caching the error forever.
 const _videoCache = {};
 
-function prefetchVideo(postId, url) {
-  if (!url) return;
-  if (_videoCache[postId] && _videoCache[postId].state !== 'error') return;
-  _videoCache[postId] = { state: 'loading' };
-  fetch(url, { mode: 'cors' })
-    .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.blob(); })
-    .then(blob => {
-      _videoCache[postId] = { state: 'ready', file: new File([blob], 'reel.mp4', { type: 'video/mp4' }) };
-    })
-    .catch(() => { _videoCache[postId] = { state: 'error' }; });
+function prefetchVideo(url) {
+  if (!url) return null;
+  if (!_videoCache[url]) {
+    const name = (url.split('/').pop() || 'reel.mp4').split('?')[0];
+    _videoCache[url] = fetch(url, { mode: 'cors' })
+      .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.blob(); })
+      .then(blob => new File([blob], name.endsWith('.mp4') ? name : 'reel.mp4', { type: 'video/mp4' }))
+      .catch(err => { delete _videoCache[url]; throw err; });
+  }
+  return _videoCache[url];
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -561,36 +563,6 @@ async function doValidate(pageId, btn) {
   }
 }
 
-// Deliver a File via the iOS share sheet (Save Video) or a desktop blob download.
-function _deliverFile(file, btn, reset) {
-  // iOS gotcha: share files ALONE. Passing `title`/`text` alongside `files` makes
-  // iOS treat it as a text share and silently drop the video — the share sheet shows
-  // "Enregistrer la vidéo" but nothing lands in the camera roll. canShare is checked
-  // with the SAME payload we share (files only) so the two never disagree.
-  if (navigator.canShare?.({ files: [file] })) {
-    return navigator.share({ files: [file] }).then(() => {
-      btn.innerHTML = 'Saved ✓';
-      btn.classList.add('done');
-      toast('Appuie sur "Enregistrer la vidéo"');
-      reset();
-    });
-  }
-  // Desktop: trigger direct download via blob URL
-  const blobUrl = URL.createObjectURL(file);
-  const a = document.createElement('a');
-  a.href = blobUrl;
-  a.download = 'reel.mp4';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
-  btn.innerHTML = 'Downloaded ✓';
-  btn.classList.add('done');
-  toast('Vidéo téléchargée');
-  reset();
-  return Promise.resolve();
-}
-
 async function doDownload(pageId, videoUrl, btn) {
   if (!videoUrl) { toast('Pas encore de vidéo — l\'agent doit pousser d\'abord'); return; }
 
@@ -602,33 +574,48 @@ async function doDownload(pageId, videoUrl, btn) {
     btn.blur();
   }, delay);
 
-  // iOS / iPadOS: open the REAL video in the native player. There the player's own
-  // Share button → "Enregistrer la vidéo" reliably saves to Photos.
-  // We deliberately DO NOT use navigator.share({files}) on iOS: it showed the
-  // "Enregistrer la vidéo" sheet but nothing landed in the camera roll (the regression).
-  // Opening the .mp4 directly is the OS-native path that has always worked.
+  btn.disabled = true;
+
+  // iOS / iPadOS: share sheet → "Enregistrer la vidéo". This is the only path that
+  // saves to the camera roll from a standalone PWA: navigating to the .mp4 (the v12/v13
+  // approach) opens the fullscreen native player which has NO share button when the app
+  // is launched from the home screen — the video plays but can never be saved.
+  // Two rules keep the share sheet reliable:
+  //   1. share files ALONE (title/text alongside files makes iOS drop the video);
+  //   2. have the File prefetched so share() fires inside the tap gesture window.
   const isApple = /iP(hone|ad|od)/.test(navigator.userAgent) ||
                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  if (isApple || !navigator.canShare) {
-    _openVideoUrl(videoUrl);
-    btn.disabled = true;
-    btn.innerHTML = 'Ouvert ✓';
-    btn.classList.add('done');
-    toast('Lecteur ouvert → bouton Partager ⬆ → « Enregistrer la vidéo »');
-    reset();
-    return;
+  if (isApple) {
+    btn.innerHTML = '…';
+    try {
+      const file = await prefetchVideo(videoUrl);
+      // canShare is checked with the SAME payload we share so the two never disagree.
+      if (!navigator.canShare?.({ files: [file] })) throw new Error('share unsupported');
+      await navigator.share({ files: [file] });
+      btn.innerHTML = 'Saved ✓';
+      btn.classList.add('done');
+      reset();
+      return;
+    } catch (e) {
+      if (e && e.name === 'AbortError') { reset(0); return; } // user closed the sheet
+      // Share refused (expired gesture / fetch failed): fall through to native player.
+      _openVideoUrl(videoUrl);
+      btn.innerHTML = 'Ouvert ✓';
+      btn.classList.add('done');
+      toast('Lecteur ouvert → Partager ⬆ → « Enregistrer la vidéo »');
+      reset();
+      return;
+    }
   }
 
   // Desktop (Chrome/Firefox/Edge): direct file download via blob.
-  btn.disabled = true;
   btn.innerHTML = '↓ Téléchargement…';
   try {
-    const res = await fetch(videoUrl, { mode: 'cors' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const blobUrl = URL.createObjectURL(await res.blob());
+    const file = await prefetchVideo(videoUrl);
+    const blobUrl = URL.createObjectURL(file);
     const a = document.createElement('a');
     a.href = blobUrl;
-    a.download = 'reel.mp4';
+    a.download = file.name;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -847,8 +834,11 @@ function renderPostCard(p) {
   _clips[p.id + ':tags'] = p.hashtags || '';
   _clips[p.id + ':vid']    = p.videoUrl || '';
   _clips[p.id + ':nohook'] = extractNohookUrl(p.notes) || '';
-  // No prefetch: the iOS download path opens the native player directly (no blob/share),
-  // so pre-fetching every video would just waste the phone's data for nothing.
+  // Prefetch the day's videos so navigator.share() fires instantly inside the tap
+  // gesture (a slow fetch after the tap expires the activation and iOS refuses the
+  // share sheet). Only day-view cards render here, so the data cost stays bounded.
+  prefetchVideo(_clips[p.id + ':vid']);
+  prefetchVideo(_clips[p.id + ':nohook']);
 
   let actions = '';
   if (p.hook)          actions += `<button class="copy-btn" onclick="copyText(_clips['${p.id}:hook'],this)">⧉ Hook</button>`;
