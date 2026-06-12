@@ -317,7 +317,7 @@ const DB = {
   accounts: 'a783ba9a8ec14ff5b127cb84a17788f8',
   posts:    'c6516213feb34049950edfcc5d50b8e5',
 };
-const APP_VERSION = '2026-06-12-v16';
+const APP_VERSION = '2026-06-12-v17';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STORAGE
@@ -585,12 +585,15 @@ async function doDownload(pageId, videoUrl, btn) {
   if (!videoUrl) { toast('Pas encore de vidéo — l\'agent doit pousser d\'abord'); return; }
 
   const orig = btn.innerHTML;
+  const origClick = btn.onclick;
   const reset = (delay = 2500) => setTimeout(() => {
     btn.disabled = false;
     btn.classList.remove('done');
     btn.innerHTML = orig;
+    btn.onclick = origClick;
     btn.blur();
   }, delay);
+  const saved = () => { btn.innerHTML = 'Saved ✓'; btn.classList.add('done'); reset(); };
 
   btn.disabled = true;
 
@@ -598,30 +601,53 @@ async function doDownload(pageId, videoUrl, btn) {
   // saves to the camera roll from a standalone PWA: navigating to the .mp4 (the v12/v13
   // approach) opens the fullscreen native player which has NO share button when the app
   // is launched from the home screen — the video plays but can never be saved.
-  // Two rules keep the share sheet reliable:
+  // Rules that keep the share sheet reliable:
   //   1. share files ALONE (title/text alongside files makes iOS drop the video);
-  //   2. have the File prefetched so share() fires inside the tap gesture window.
+  //   2. NEVER race a network fetch against the tap's user-activation window. If the
+  //      File isn't in memory within the grace delay, finish the download and ARM the
+  //      button — the next tap shares the in-memory File instantly. Deterministic,
+  //      whatever the connection speed.
   const isApple = /iP(hone|ad|od)/.test(navigator.userAgent) ||
                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   if (isApple) {
     btn.innerHTML = '…';
-    try {
-      const file = await prefetchVideo(videoUrl);
-      // canShare is checked with the SAME payload we share so the two never disagree.
-      if (!navigator.canShare?.({ files: [file] })) throw new Error('share unsupported');
-      await navigator.share({ files: [file] });
-      btn.innerHTML = 'Saved ✓';
-      btn.classList.add('done');
-      reset();
-      return;
-    } catch (e) {
-      if (e && e.name === 'AbortError') { reset(0); return; } // user closed the sheet
-      // Share refused (expired gesture / fetch failed): fall through to native player.
+    const pending = prefetchVideo(videoUrl);
+    let file = await Promise.race([pending, new Promise(r => setTimeout(r, 600))])
+      .catch(() => undefined);
+    if (!file) {
+      btn.innerHTML = '⏳';
+      try { file = await pending; }
+      catch (e) { toast('Vidéo inaccessible — réessaie plus tard'); reset(0); return; }
+    }
+    // canShare is checked with the SAME payload we share so the two never disagree.
+    if (!navigator.canShare?.({ files: [file] })) {
       _openVideoUrl(videoUrl);
       btn.innerHTML = 'Ouvert ✓';
       btn.classList.add('done');
       toast('Lecteur ouvert → Partager ⬆ → « Enregistrer la vidéo »');
       reset();
+      return;
+    }
+    try {
+      await navigator.share({ files: [file] });
+      saved();
+      return;
+    } catch (e) {
+      if (e && e.name === 'AbortError') { reset(0); return; } // user closed the sheet
+      // Activation expired while the file was downloading: arm an instant re-share.
+      btn.disabled = false;
+      btn.innerHTML = '⬆ Enregistrer';
+      toast('Vidéo prête — retape le bouton');
+      btn.onclick = async () => {
+        btn.disabled = true;
+        try { await navigator.share({ files: [file] }); saved(); }
+        catch (e2) {
+          if (e2 && e2.name === 'AbortError') { btn.disabled = false; return; } // stay armed
+          _openVideoUrl(videoUrl);
+          toast('Lecteur ouvert → Partager ⬆ → « Enregistrer la vidéo »');
+          reset();
+        }
+      };
       return;
     }
   }
@@ -855,14 +881,13 @@ function renderPostCard(p) {
   // Prefetch the day's videos so navigator.share() fires instantly inside the tap
   // gesture (a slow fetch after the tap expires the activation and iOS refuses the
   // share sheet). Only day-view cards render here, so the data cost stays bounded.
-  prefetchVideo(_clips[p.id + ':vid']);
-  // The Sans-hook button renders hidden and is revealed only once its file is
-  // confirmed to exist (prefetch resolved) — no dead button on a 404.
+  // The no-hook variant downloads strictly AFTER the main video: both racing in
+  // parallel doubled the payload and delayed the primary File past the tap window,
+  // which resurfaced the share-less fullscreen-player bug (v16 regression).
+  const mainPrefetch = Promise.resolve(prefetchVideo(_clips[p.id + ':vid']));
   if (_clips[p.id + ':nohook']) {
-    prefetchVideo(_clips[p.id + ':nohook'])
-      .then(() => document.querySelectorAll(`[data-nohook="${p.id}"]`)
-        .forEach(b => { b.style.display = ''; }))
-      .catch(() => {});
+    mainPrefetch.catch(() => {})
+      .then(() => { const u = _clips[p.id + ':nohook']; if (u) Promise.resolve(prefetchVideo(u)).catch(() => {}); });
   }
 
   let actions = '';
@@ -871,7 +896,10 @@ function renderPostCard(p) {
   if (p.hashtags)      actions += `<button class="copy-btn hashtags" onclick="copyText(_clips['${p.id}:tags'],this)">⧉ #Tags</button>`;
   if (p.status === 'Pending') actions += `<button class="validate-btn" onclick="doValidate('${p.id}',this)">✓ Validate</button>`;
   actions += `<button class="dl-btn" onclick="doDownload('${p.id}',_clips['${p.id}:vid'],this)">↓ Video</button>`;
-  if (_clips[p.id + ':nohook']) actions += `<button class="dl-btn" data-nohook="${p.id}" style="opacity:.75;display:none" onclick="doDownload('${p.id}',_clips['${p.id}:nohook'],this)">↓ Sans hook</button>`;
+  // Always visible when a no-hook URL resolves: publish-to-app.py now refuses lane-ai
+  // pushes without the clean variant, so every new reel ships both files. A missing
+  // legacy file surfaces as an explicit toast on tap, not as a silently absent button.
+  if (_clips[p.id + ':nohook']) actions += `<button class="dl-btn" style="opacity:.75" onclick="doDownload('${p.id}',_clips['${p.id}:nohook'],this)">↓ Sans hook</button>`;
 
   return `
   <div class="post-card ${sClass}" data-id="${p.id}">
