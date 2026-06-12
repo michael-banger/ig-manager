@@ -317,7 +317,7 @@ const DB = {
   accounts: 'a783ba9a8ec14ff5b127cb84a17788f8',
   posts:    'c6516213feb34049950edfcc5d50b8e5',
 };
-const APP_VERSION = '2026-06-12-v15';
+const APP_VERSION = '2026-06-12-v16';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STORAGE
@@ -466,6 +466,24 @@ function extractNohookUrl(notes) {
   if (!notes) return null;
   const m = notes.match(/SANS-HOOK:\s*(https?:\/\/\S+)/i);
   return m ? m[1] : null;
+}
+
+// Where the no-hook variant of a post's video can be declared, in priority order:
+//   1. explicit `nohookUrl` field in the static feed,
+//   2. "SANS-HOOK: <url>" in the Notion Notes property,
+//   3. filename convention — Hermès pushes both files side by side:
+//      …-FINAL.mp4 (hook) and …-NOHOOK.mp4 (clean).
+// The convention fallback means the button works even when the feed sync or the
+// Notion push forgot the URL; renderPostCard only reveals the button once the
+// prefetch confirms the file actually exists, so a wrong guess shows nothing.
+function resolveNohookUrl(p) {
+  if (p.nohookUrl) return p.nohookUrl;
+  const fromNotes = extractNohookUrl(p.notes);
+  if (fromNotes) return fromNotes;
+  if (p.videoUrl && /-FINAL\.mp4$/i.test(p.videoUrl)) {
+    return p.videoUrl.replace(/-FINAL\.mp4$/i, '-NOHOOK.mp4');
+  }
+  return null;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -833,12 +851,19 @@ function renderPostCard(p) {
   _clips[p.id + ':desc'] = descFull;
   _clips[p.id + ':tags'] = p.hashtags || '';
   _clips[p.id + ':vid']    = p.videoUrl || '';
-  _clips[p.id + ':nohook'] = extractNohookUrl(p.notes) || '';
+  _clips[p.id + ':nohook'] = resolveNohookUrl(p) || '';
   // Prefetch the day's videos so navigator.share() fires instantly inside the tap
   // gesture (a slow fetch after the tap expires the activation and iOS refuses the
   // share sheet). Only day-view cards render here, so the data cost stays bounded.
   prefetchVideo(_clips[p.id + ':vid']);
-  prefetchVideo(_clips[p.id + ':nohook']);
+  // The Sans-hook button renders hidden and is revealed only once its file is
+  // confirmed to exist (prefetch resolved) — no dead button on a 404.
+  if (_clips[p.id + ':nohook']) {
+    prefetchVideo(_clips[p.id + ':nohook'])
+      .then(() => document.querySelectorAll(`[data-nohook="${p.id}"]`)
+        .forEach(b => { b.style.display = ''; }))
+      .catch(() => {});
+  }
 
   let actions = '';
   if (p.hook)          actions += `<button class="copy-btn" onclick="copyText(_clips['${p.id}:hook'],this)">⧉ Hook</button>`;
@@ -846,7 +871,7 @@ function renderPostCard(p) {
   if (p.hashtags)      actions += `<button class="copy-btn hashtags" onclick="copyText(_clips['${p.id}:tags'],this)">⧉ #Tags</button>`;
   if (p.status === 'Pending') actions += `<button class="validate-btn" onclick="doValidate('${p.id}',this)">✓ Validate</button>`;
   actions += `<button class="dl-btn" onclick="doDownload('${p.id}',_clips['${p.id}:vid'],this)">↓ Video</button>`;
-  if (_clips[p.id + ':nohook']) actions += `<button class="dl-btn" style="opacity:.75" onclick="doDownload('${p.id}',_clips['${p.id}:nohook'],this)">↓ Sans hook</button>`;
+  if (_clips[p.id + ':nohook']) actions += `<button class="dl-btn" data-nohook="${p.id}" style="opacity:.75;display:none" onclick="doDownload('${p.id}',_clips['${p.id}:nohook'],this)">↓ Sans hook</button>`;
 
   return `
   <div class="post-card ${sClass}" data-id="${p.id}">
