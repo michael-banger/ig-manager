@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-11T19:59:24.617285+00:00",
+  "generated_at": "2026-06-12T13:25:53.767885+00:00",
   "count": 29,
   "posts": [
     {
@@ -14,7 +14,9 @@
       "description": "",
       "hashtags": "",
       "videoUrl": "",
-      "thumbnailUrl": ""
+      "thumbnailUrl": "",
+      "notes": "Cancelled by user on 2026-05-25. Do not use this app entry.",
+      "nohookUrl": ""
     },
     {
       "id": "36bc3402-aa15-818b-b56c-f606008e965a",
@@ -28,7 +30,9 @@
       "description": "",
       "hashtags": "",
       "videoUrl": "",
-      "thumbnailUrl": ""
+      "thumbnailUrl": "",
+      "notes": "Cancelled by user on 2026-05-25. Do not use this app entry.",
+      "nohookUrl": ""
     },
     {
       "id": "36bc3402-aa15-81cb-a0d7-d73d33bcd820",
@@ -42,7 +46,9 @@
       "description": "",
       "hashtags": "",
       "videoUrl": "",
-      "thumbnailUrl": ""
+      "thumbnailUrl": "",
+      "notes": "Cancelled by user on 2026-05-25. Do not use this app entry.",
+      "nohookUrl": ""
     },
     {
       "id": "36bc3402-aa15-81f6-8583-d5923facedc7",
@@ -56,7 +62,9 @@
       "description": "",
       "hashtags": "",
       "videoUrl": "",
-      "thumbnailUrl": ""
+      "thumbnailUrl": "",
+      "notes": "Cancelled by user on 2026-05-25. Do not use this app entry.",
+      "nohookUrl": ""
     },
     {
       "id": "36ac3402-aa15-81f6-86f2-df96ddb2eea7",
@@ -70,7 +78,9 @@
       "description": "They said nobody would buy these 😤\n195,000 people disagree.\nLink in bio.",
       "hashtags": "#resinart #art #nba #basketball #michaeljordan",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/museum-yourself/2026-05-24-post1/MUSEUM-YOURSELF-2026-05-24-POST1.mp4",
-      "thumbnailUrl": ""
+      "thumbnailUrl": "",
+      "notes": "Fixed 24-may card. This version uses the GitHub Pages video URL so the IG Manager Download button should fetch the MP4 and open the iPhone share sheet for Save Video / Photos.",
+      "nohookUrl": ""
     },
     {
       "id": "36ac3402-aa15-8109-85fa-fe81ff45b9b5",
@@ -84,7 +94,9 @@
       "description": "Museum Yourself manual repost pack for CapCut / manual editor. Source reel DYSUEFIRMEC from @ellisona.arts. Clean source trimmed lightly and metadata stripped.",
       "hashtags": "#resinart #art #nba #basketball #michaeljordan",
       "videoUrl": "https://raw.githubusercontent.com/michael-banger/organic-ai-workflow/main/MY%20CONTENT/MUSEUM-YOURSELF/CONTENU/2026-05-24/POST%201/SOURCE/source-ellisona-DYSUEFIRMEC-clean.mp4",
-      "thumbnailUrl": ""
+      "thumbnailUrl": "",
+      "notes": "Manual pack only. Add hooks manually in CapCut or another editor using the timings in FINAL/MANUAL-EDIT-NOTES.md. Clean source file is the download asset for the app.",
+      "nohookUrl": ""
     },
     {
       "id": "369c3402-aa15-8163-a187-e9f6fcc61dd1",
@@ -98,7 +110,9 @@
       "description": "They said nobody would buy these 😤\n195,000 people disagree.\nLink in bio.",
       "hashtags": "#resinart #nba #handmade #resinlamp #basketball #lebron #artisanlamp #homedecor",
       "videoUrl": "https://raw.githubusercontent.com/michael-banger/ig-manager/main/videos/museum-yourself/2026-05-23-post1/MUSEUM-YOURSELF-2026-05-23-POST1.mp4",
-      "thumbnailUrl": "https://raw.githubusercontent.com/michael-banger/ig-manager/main/thumbs/museum-yourself/2026-05-23-post1/MUSEUM-YOURSELF-2026-05-23-POST1.jpg"
+      "thumbnailUrl": "https://raw.githubusercontent.com/michael-banger/ig-manager/main/thumbs/museum-yourself/2026-05-23-post1/MUSEUM-YOURSELF-2026-05-23-POST1.jpg",
+      "notes": "Corrected Codex render v4. Badge height 214/1906 = 11.23%, under 12% hard cap. Rejected oversized v3 preserved locally in QA. Manual posting only, warmup max 1 reel today.",
+      "nohookUrl": ""
     },
     {
       "id": "36ac3402-aa15-816a-9eca-c9cb6ed81601",
@@ -112,7 +126,9 @@
       "description": "Museum Yourself manual repost pack for CapCut / manual editor. Source reel DYSUEFIRMEC from @ellisona.arts. Clean source trimmed lightly and metadata stripped.",
       "hashtags": "#resinart #art #nba #basketball #michaeljordan",
       "videoUrl": "https://raw.githubusercontent.com/michael-banger/organic-ai-workflow/main/videos/museum-yourself/2026-05-24-post1/MUSEUM-YOURSELF-2026-05-24-POST1.mp4",
-      "thumbnailUrl": ""
+      "thumbnailUrl": "",
+      "notes": "Primary 24-may entry. Manual pack only. Add hooks manually in CapCut or another editor using the timings in FINAL/MANUAL-EDIT-NOTES.md. Clean source file is the download asset for the app.",
+      "nohookUrl": ""
     },
     {
       "id": "36ac3402-aa15-8117-9a2b-d687cc022f62",
@@ -126,7 +142,9 @@
       "description": "Museum Yourself manual repost pack for CapCut / manual editor. Source reel DYSUEFIRMEC from @ellisona.arts. Clean source trimmed lightly and metadata stripped.",
       "hashtags": "#resinart #art #nba #basketball #michaeljordan",
       "videoUrl": "https://raw.githubusercontent.com/michael-banger/organic-ai-workflow/main/MY%20CONTENT/MUSEUM-YOURSELF/CONTENU/2026-05-24/POST%201/SOURCE/source-ellisona-DYSUEFIRMEC-clean.mp4",
-      "thumbnailUrl": ""
+      "thumbnailUrl": "",
+      "notes": "Mirror entry for the current dashboard date. Manual pack only. Add hooks manually in CapCut or another editor using the timings in FINAL/MANUAL-EDIT-NOTES.md. Clean source file is the download asset for the app.",
+      "nohookUrl": ""
     },
     {
       "id": "373c3402-aa15-81d4-9dcd-e37e07a7220d",
@@ -140,7 +158,9 @@
       "description": "Qui d'autre a 30+ ans et assume plus ses achats ? 😅",
       "hashtags": "#barbecue #bbq #ete #grillade #summer",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop/bbq-01/BBQ-SUMMER-SHOP-BBQ-01-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/bbq-summer-shop/bbq-01/BBQ-SUMMER-SHOP-BBQ-01-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/bbq-summer-shop/bbq-01/BBQ-SUMMER-SHOP-BBQ-01-CLEAN.jpg",
+      "notes": "CLEAN principal only. AUTO removed from repo.",
+      "nohookUrl": ""
     },
     {
       "id": "373c3402-aa15-817a-8df5-fe2a9844da35",
@@ -154,7 +174,9 @@
       "description": "Qui d'autre a 30+ ans et assume plus ses achats ?",
       "hashtags": "#barbecue #bbq #ete #grillade #summer",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop/bbq-01/BBQ-SUMMER-SHOP-BBQ-01-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/bbq-summer-shop/bbq-01/BBQ-SUMMER-SHOP-BBQ-01-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/bbq-summer-shop/bbq-01/BBQ-SUMMER-SHOP-BBQ-01-CLEAN.jpg",
+      "notes": "AUTO (QC pass, review): https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop/bbq-01/BBQ-SUMMER-SHOP-BBQ-01-AUTO.mp4",
+      "nohookUrl": ""
     },
     {
       "id": "374c3402-aa15-8110-8af4-fa6ffadaae94",
@@ -168,7 +190,9 @@
       "description": "Quand t'essayes de nettoyer ton barbecue de 2018... 😮‍💨",
       "hashtags": "#barbecue #bbq #ete #grillade",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop/bbq-02/BBQ-SUMMER-SHOP-BBQ-02-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/bbq-summer-shop/bbq-02/BBQ-SUMMER-SHOP-BBQ-02-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/bbq-summer-shop/bbq-02/BBQ-SUMMER-SHOP-BBQ-02-CLEAN.jpg",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     },
     {
       "id": "374c3402-aa15-812c-b88a-dcfc8a295cbe",
@@ -182,7 +206,9 @@
       "description": "Quand elle te dit \"achète pas de truc\" mais que tu sais très bien ce qu'elle veut vraiment 🫣⚽",
       "hashtags": "#football #foot #worldcup #coupedumonde #drink #bar #restaurant #supporteur",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/verre-coupe-du-monde/verre-cdm-01/VERRE-COUPE-DU-MONDE-VERRE-CDM-01-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/verre-coupe-du-monde/verre-cdm-01/VERRE-COUPE-DU-MONDE-VERRE-CDM-01-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/verre-coupe-du-monde/verre-cdm-01/VERRE-COUPE-DU-MONDE-VERRE-CDM-01-CLEAN.jpg",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     },
     {
       "id": "374c3402-aa15-8136-b35e-d0132d7c36df",
@@ -196,7 +222,9 @@
       "description": "L'été est clairement passé en mode chaos.",
       "hashtags": "#ete #watergun #famille #amis #vacances #jeu",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/water-gun-fr/water-gun-01/WATER-GUN-FR-WATER-GUN-01-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/water-gun-fr/water-gun-01/WATER-GUN-FR-WATER-GUN-01-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/water-gun-fr/water-gun-01/WATER-GUN-FR-WATER-GUN-01-CLEAN.jpg",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     },
     {
       "id": "374c3402-aa15-816d-a399-f8094a8757bc",
@@ -210,7 +238,9 @@
       "description": "Qui d'autre a 30+ ans et assume plus ses achats ? 😅",
       "hashtags": "#barbecue #bbq #ete #grillade #summer",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop/bbq-01/BBQ-SUMMER-SHOP-BBQ-01-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/bbq-summer-shop/bbq-01/BBQ-SUMMER-SHOP-BBQ-01-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/bbq-summer-shop/bbq-01/BBQ-SUMMER-SHOP-BBQ-01-CLEAN.jpg",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     },
     {
       "id": "374c3402-aa15-81be-84fd-f8af6e140515",
@@ -224,7 +254,9 @@
       "description": "Repost source piece for CAR-FAN-BRAND FR.",
       "hashtags": "#cars #carsoftiktok #luxurycar #repost",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/car-fan-brand-fr/dyfkdpqnr8p/CAR-FAN-BRAND-FR-DYFKDPQNR8P-CLEAN.mp4?v=20260603b",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/car-fan-brand-fr/dyfkdpqnr8p/CAR-FAN-BRAND-FR-DYFKDPQNR8P-CLEAN.jpg?v=20260603b"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/car-fan-brand-fr/dyfkdpqnr8p/CAR-FAN-BRAND-FR-DYFKDPQNR8P-CLEAN.jpg?v=20260603b",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     },
     {
       "id": "374c3402-aa15-81d4-b781-d1a44c3f20e0",
@@ -238,7 +270,9 @@
       "description": "Qui d'autre a 30+ ans et assume plus ses achats ?",
       "hashtags": "#barbecue #bbq #ete #grillade #summer",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop/bbq-01/BBQ-SUMMER-SHOP-BBQ-01-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/bbq-summer-shop/bbq-01/BBQ-SUMMER-SHOP-BBQ-01-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/bbq-summer-shop/bbq-01/BBQ-SUMMER-SHOP-BBQ-01-CLEAN.jpg",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     },
     {
       "id": "376c3402-aa15-81c1-9f1b-c7e03c5d4599",
@@ -252,7 +286,9 @@
       "description": "Quand elle te dit \"achète pas de truc\" mais que tu sais très bien ce qu'elle veut vraiment 🫣⚽",
       "hashtags": "#football #foot #worldcup #coupedumonde #drink #bar #restaurant #supporteur",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/verre-coupe-du-monde/verre-cdm-01/VERRE-COUPE-DU-MONDE-VERRE-CDM-01-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/verre-coupe-du-monde/verre-cdm-01/VERRE-COUPE-DU-MONDE-VERRE-CDM-01-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/verre-coupe-du-monde/verre-cdm-01/VERRE-COUPE-DU-MONDE-VERRE-CDM-01-CLEAN.jpg",
+      "notes": "AUTO (QC pass, review): https://michael-banger.github.io/ig-manager/videos/verre-coupe-du-monde/verre-cdm-01/VERRE-COUPE-DU-MONDE-VERRE-CDM-01-AUTO.mp4",
+      "nohookUrl": ""
     },
     {
       "id": "376c3402-aa15-81da-a869-eada51a38daf",
@@ -266,7 +302,9 @@
       "description": "L'été est clairement passé en mode chaos.",
       "hashtags": "#ete #watergun #famille #amis #vacances #jeu",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/water-gun-fr/water-gun-01/WATER-GUN-FR-WATER-GUN-01-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/water-gun-fr/water-gun-01/WATER-GUN-FR-WATER-GUN-01-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/water-gun-fr/water-gun-01/WATER-GUN-FR-WATER-GUN-01-CLEAN.jpg",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     },
     {
       "id": "376c3402-aa15-81fb-8b26-dda4aed23bc3",
@@ -280,7 +318,9 @@
       "description": "Quand t'essayes de nettoyer ton barbecue de 2018... 😮‍💨",
       "hashtags": "#barbecue #bbq #ete #grillade",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop/bbq-02/BBQ-SUMMER-SHOP-BBQ-02-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/bbq-summer-shop/bbq-02/BBQ-SUMMER-SHOP-BBQ-02-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/bbq-summer-shop/bbq-02/BBQ-SUMMER-SHOP-BBQ-02-CLEAN.jpg",
+      "notes": "AUTO (QC pass, review): https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop/bbq-02/BBQ-SUMMER-SHOP-BBQ-02-AUTO.mp4",
+      "nohookUrl": ""
     },
     {
       "id": "378c3402-aa15-813f-adfb-fdb4ff4833be",
@@ -294,7 +334,9 @@
       "description": "Le sport en version résine, beaucoup plus premium.",
       "hashtags": "",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/us-museum-resin-art/2026-06-07-post1/US-MUSEUM-RESIN-ART-2026-06-07-POST1-CLEAN.mp4",
-      "thumbnailUrl": ""
+      "thumbnailUrl": "",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     },
     {
       "id": "378c3402-aa15-81fb-bbcb-d8e548396f3f",
@@ -308,7 +350,9 @@
       "description": "La bonne lumière pour les vraies voitures.",
       "hashtags": "",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/car-fan-brand-fr/2026-06-07-post1/CAR-FAN-BRAND-FR-2026-06-07-POST1-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/car-fan-brand-fr/2026-06-07-post1/CAR-FAN-BRAND-FR-2026-06-07-POST1-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/car-fan-brand-fr/2026-06-07-post1/CAR-FAN-BRAND-FR-2026-06-07-POST1-CLEAN.jpg",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     },
     {
       "id": "378c3402-aa15-8122-80f4-f92654007fb1",
@@ -322,7 +366,9 @@
       "description": "Anime resin, fan-community bait, and a clean reveal.",
       "hashtags": "",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/us-museum-resin-art/2026-06-07-post2/US-MUSEUM-RESIN-ART-2026-06-07-POST2-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/us-museum-resin-art/2026-06-07-post2/US-MUSEUM-RESIN-ART-2026-06-07-POST2-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/us-museum-resin-art/2026-06-07-post2/US-MUSEUM-RESIN-ART-2026-06-07-POST2-CLEAN.jpg",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     },
     {
       "id": "378c3402-aa15-8130-9fcd-c66584541bf6",
@@ -336,7 +382,9 @@
       "description": "Quand le vibe NFS rencontre la résine.",
       "hashtags": "",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/car-fan-brand-fr/2026-06-07-post2/CAR-FAN-BRAND-FR-2026-06-07-POST2-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/car-fan-brand-fr/2026-06-07-post2/CAR-FAN-BRAND-FR-2026-06-07-POST2-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/car-fan-brand-fr/2026-06-07-post2/CAR-FAN-BRAND-FR-2026-06-07-POST2-CLEAN.jpg",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     },
     {
       "id": "378c3402-aa15-8176-8834-f841be6ab58f",
@@ -350,7 +398,9 @@
       "description": "L’énergie NFS, version lampe résine.",
       "hashtags": "",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/car-fan-brand-fr/2026-06-07-post3/CAR-FAN-BRAND-FR-2026-06-07-POST3-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/car-fan-brand-fr/2026-06-07-post3/CAR-FAN-BRAND-FR-2026-06-07-POST3-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/car-fan-brand-fr/2026-06-07-post3/CAR-FAN-BRAND-FR-2026-06-07-POST3-CLEAN.jpg",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     },
     {
       "id": "378c3402-aa15-81a7-996f-d19022f7f56f",
@@ -364,7 +414,9 @@
       "description": "NBA resin lamp, fan-tribe callout, clean reveal.",
       "hashtags": "",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/us-museum-resin-art/2026-06-07-post3/US-MUSEUM-RESIN-ART-2026-06-07-POST3-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/us-museum-resin-art/2026-06-07-post3/US-MUSEUM-RESIN-ART-2026-06-07-POST3-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/us-museum-resin-art/2026-06-07-post3/US-MUSEUM-RESIN-ART-2026-06-07-POST3-CLEAN.jpg",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     },
     {
       "id": "378c3402-aa15-8195-9f55-e4db4de1c936",
@@ -378,7 +430,9 @@
       "description": "A clean NFS-style resin lamp reveal built for car fans — cinematic glow, premium finish, and a smooth reveal.",
       "hashtags": "#car #nfs #needforspeed #resin #lamp #cars",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/car-fan-brand-fr/2026-06-08-post1/CAR-FAN-BRAND-FR-2026-06-08-POST1-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/car-fan-brand-fr/2026-06-08-post1/CAR-FAN-BRAND-FR-2026-06-08-POST1-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/car-fan-brand-fr/2026-06-08-post1/CAR-FAN-BRAND-FR-2026-06-08-POST1-CLEAN.jpg",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     },
     {
       "id": "378c3402-aa15-81b1-bfd4-c75e3663e735",
@@ -392,7 +446,9 @@
       "description": "A fresh resin-art reveal with a sporty NBA angle and a clean premium finish. Built for saves, shares, and repeat rewatches.",
       "hashtags": "#nba #basketball #resinart #michaeljordan #lebron #art",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/us-museum-resin-art/2026-06-08-post1/US-MUSEUM-RESIN-ART-2026-06-08-POST1-CLEAN.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/us-museum-resin-art/2026-06-08-post1/US-MUSEUM-RESIN-ART-2026-06-08-POST1-CLEAN.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/us-museum-resin-art/2026-06-08-post1/US-MUSEUM-RESIN-ART-2026-06-08-POST1-CLEAN.jpg",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     },
     {
       "id": "37cc3402-aa15-8124-bff5-c80a829c5cae",
@@ -406,7 +462,9 @@
       "description": "Sac crochet fleuri, vibe été luxe sans effort.",
       "hashtags": "#saccrochet #sacfaitmain #modeete #outfitinspo #handmadebag",
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/handbag-ai-founder-fr/handbag-ai-2026-06-11-final/HANDBAG-AI-FOUNDER-FR-HANDBAG-AI-2026-06-11-FINAL-FINAL.mp4",
-      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/handbag-ai-founder-fr/handbag-ai-2026-06-11-final/HANDBAG-AI-FOUNDER-FR-HANDBAG-AI-2026-06-11-FINAL-FINAL.jpg"
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/handbag-ai-founder-fr/handbag-ai-2026-06-11-final/HANDBAG-AI-FOUNDER-FR-HANDBAG-AI-2026-06-11-FINAL-FINAL.jpg",
+      "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/handbag-ai-founder-fr/handbag-ai-2026-06-11-final/HANDBAG-AI-FOUNDER-FR-HANDBAG-AI-2026-06-11-FINAL-NOHOOK.mp4",
+      "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/handbag-ai-founder-fr/handbag-ai-2026-06-11-final/HANDBAG-AI-FOUNDER-FR-HANDBAG-AI-2026-06-11-FINAL-NOHOOK.mp4"
     }
   ]
 }
