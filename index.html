@@ -317,7 +317,7 @@ const DB = {
   accounts: 'a783ba9a8ec14ff5b127cb84a17788f8',
   posts:    'c6516213feb34049950edfcc5d50b8e5',
 };
-const APP_VERSION = '2026-06-12-v17';
+const APP_VERSION = '2026-06-13-v18';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STORAGE
@@ -877,7 +877,12 @@ function renderPostCard(p) {
   _clips[p.id + ':desc'] = descFull;
   _clips[p.id + ':tags'] = p.hashtags || '';
   _clips[p.id + ':vid']    = p.videoUrl || '';
-  _clips[p.id + ':nohook'] = resolveNohookUrl(p) || '';
+  // The "Sans hook" button is universal: every post with a video shows BOTH download
+  // buttons (Yann rule 2026-06-13). When a post has a distinct no-hook file (AI lane:
+  // …-FINAL.mp4 + …-NOHOOK.mp4) the button targets it; for repost / manual-pack posts
+  // whose only file is already hook-less (…-CLEAN.mp4) it falls back to the main video
+  // so the button still works identically across every account / video / day.
+  _clips[p.id + ':nohook'] = resolveNohookUrl(p) || p.videoUrl || '';
   // Prefetch the day's videos so navigator.share() fires instantly inside the tap
   // gesture (a slow fetch after the tap expires the activation and iOS refuses the
   // share sheet). Only day-view cards render here, so the data cost stays bounded.
@@ -885,7 +890,7 @@ function renderPostCard(p) {
   // parallel doubled the payload and delayed the primary File past the tap window,
   // which resurfaced the share-less fullscreen-player bug (v16 regression).
   const mainPrefetch = Promise.resolve(prefetchVideo(_clips[p.id + ':vid']));
-  if (_clips[p.id + ':nohook']) {
+  if (_clips[p.id + ':nohook'] && _clips[p.id + ':nohook'] !== _clips[p.id + ':vid']) {
     mainPrefetch.catch(() => {})
       .then(() => { const u = _clips[p.id + ':nohook']; if (u) Promise.resolve(prefetchVideo(u)).catch(() => {}); });
   }
@@ -896,10 +901,10 @@ function renderPostCard(p) {
   if (p.hashtags)      actions += `<button class="copy-btn hashtags" onclick="copyText(_clips['${p.id}:tags'],this)">⧉ #Tags</button>`;
   if (p.status === 'Pending') actions += `<button class="validate-btn" onclick="doValidate('${p.id}',this)">✓ Validate</button>`;
   actions += `<button class="dl-btn" onclick="doDownload('${p.id}',_clips['${p.id}:vid'],this)">↓ Video</button>`;
-  // Always visible when a no-hook URL resolves: publish-to-app.py now refuses lane-ai
-  // pushes without the clean variant, so every new reel ships both files. A missing
-  // legacy file surfaces as an explicit toast on tap, not as a silently absent button.
-  if (_clips[p.id + ':nohook']) actions += `<button class="dl-btn" style="opacity:.75" onclick="doDownload('${p.id}',_clips['${p.id}:nohook'],this)">↓ Sans hook</button>`;
+  // Universal: any post that has a video shows the "Sans hook" button too. It targets the
+  // distinct no-hook file when one exists, otherwise the same video (already hook-less for
+  // repost / manual-pack). Both buttons therefore work identically on every account / day.
+  if (_clips[p.id + ':vid']) actions += `<button class="dl-btn" style="opacity:.75" onclick="doDownload('${p.id}',_clips['${p.id}:nohook'],this)">↓ Sans hook</button>`;
 
   return `
   <div class="post-card ${sClass}" data-id="${p.id}">
