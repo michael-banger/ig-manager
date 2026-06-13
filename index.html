@@ -317,7 +317,7 @@ const DB = {
   accounts: 'a783ba9a8ec14ff5b127cb84a17788f8',
   posts:    'c6516213feb34049950edfcc5d50b8e5',
 };
-const APP_VERSION = '2026-06-13-v18';
+const APP_VERSION = '2026-06-13-v19';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STORAGE
@@ -895,16 +895,21 @@ function renderPostCard(p) {
       .then(() => { const u = _clips[p.id + ':nohook']; if (u) Promise.resolve(prefetchVideo(u)).catch(() => {}); });
   }
 
+  // UNIFORM CONTAINER (Yann rule 2026-06-13): every post card shows the SAME five action
+  // buttons regardless of account / product / day — copy hook, copy desc+#, copy #tags,
+  // download video (with hook), download video (sans hook). They render unconditionally so
+  // the card is identical everywhere; copy of an empty field is a harmless no-op and the
+  // download buttons toast "pas encore de vidéo" when the agent hasn't pushed yet.
   let actions = '';
-  if (p.hook)          actions += `<button class="copy-btn" onclick="copyText(_clips['${p.id}:hook'],this)">⧉ Hook</button>`;
-  if (descFull.trim()) actions += `<button class="copy-btn description" onclick="copyText(_clips['${p.id}:desc'],this)">⧉ Desc+#</button>`;
-  if (p.hashtags)      actions += `<button class="copy-btn hashtags" onclick="copyText(_clips['${p.id}:tags'],this)">⧉ #Tags</button>`;
+  actions += `<button class="copy-btn" onclick="copyText(_clips['${p.id}:hook'],this)">⧉ Hook</button>`;
+  actions += `<button class="copy-btn description" onclick="copyText(_clips['${p.id}:desc'],this)">⧉ Desc+#</button>`;
+  actions += `<button class="copy-btn hashtags" onclick="copyText(_clips['${p.id}:tags'],this)">⧉ #Tags</button>`;
   if (p.status === 'Pending') actions += `<button class="validate-btn" onclick="doValidate('${p.id}',this)">✓ Validate</button>`;
   actions += `<button class="dl-btn" onclick="doDownload('${p.id}',_clips['${p.id}:vid'],this)">↓ Video</button>`;
-  // Universal: any post that has a video shows the "Sans hook" button too. It targets the
-  // distinct no-hook file when one exists, otherwise the same video (already hook-less for
-  // repost / manual-pack). Both buttons therefore work identically on every account / day.
-  if (_clips[p.id + ':vid']) actions += `<button class="dl-btn" style="opacity:.75" onclick="doDownload('${p.id}',_clips['${p.id}:nohook'],this)">↓ Sans hook</button>`;
+  // "Sans hook" is part of the uniform container — always rendered. It targets the distinct
+  // no-hook file when one exists, otherwise the same video (already hook-less for repost /
+  // manual-pack). Both download buttons therefore behave identically on every account / day.
+  actions += `<button class="dl-btn" style="opacity:.75" onclick="doDownload('${p.id}',_clips['${p.id}:nohook'],this)">↓ Sans hook</button>`;
 
   return `
   <div class="post-card ${sClass}" data-id="${p.id}">
