@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-13T12:16:42.608855+00:00",
-  "count": 32,
+  "generated_at": "2026-06-13T20:58:13.921309+00:00",
+  "count": 33,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -513,6 +513,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/tea-brand-fr/poterie-post-1/TEA-BRAND-FR-POTERIE-POST-1-FINAL.jpg",
       "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/tea-brand-fr/poterie-post-1/TEA-BRAND-FR-POTERIE-POST-1-NOHOOK.mp4",
       "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/tea-brand-fr/poterie-post-1/TEA-BRAND-FR-POTERIE-POST-1-NOHOOK.mp4"
+    },
+    {
+      "id": "37ec3402-aa15-81e4-82af-f5a291150a50",
+      "name": "BBQ Summer Shop FR — 2026-06-14",
+      "account": "BBQ Summer Shop FR",
+      "date": "2026-06-14",
+      "time": "",
+      "category": "RP",
+      "status": "Pending",
+      "hook": "Le gadget BBQ qui lance la discussion.\nTu le sors à quel apéro ?",
+      "description": "Test repost sourcé BBQ pour demain. Vidéo clean + version hook prêtes dans l’app. Source originale suivie côté registre.\nSource: https://www.instagram.com/reel/DXldAN0jMM8/",
+      "hashtags": "#barbecue #ete #summer #famille #friends",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop-fr/2026-06-14-bbq-summer-shop-dxldan0jmm8/BBQ-SUMMER-SHOP-FR-2026-06-14-BBQ-SUMMER-SHOP-DXLDAN0JMM8-CLEAN.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/bbq-summer-shop-fr/2026-06-14-bbq-summer-shop-dxldan0jmm8/BBQ-SUMMER-SHOP-FR-2026-06-14-BBQ-SUMMER-SHOP-DXLDAN0JMM8-CLEAN.jpg",
+      "notes": "AUTO (QC pass, review): https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop-fr/2026-06-14-bbq-summer-shop-dxldan0jmm8/BBQ-SUMMER-SHOP-FR-2026-06-14-BBQ-SUMMER-SHOP-DXLDAN0JMM8-AUTO.mp4",
+      "nohookUrl": ""
     }
   ]
 }
