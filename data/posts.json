@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-13T21:19:23.962115+00:00",
-  "count": 40,
+  "generated_at": "2026-06-14T02:05:08.639890+00:00",
+  "count": 41,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -640,6 +640,22 @@
       "videoUrl": "https://michael-banger.github.io/ig-manager/videos/us-whisky/2026-06-14-us-whisky-dw41ch5d8w/US-WHISKY-2026-06-14-US-WHISKY-DW41CH5D8W-CLEAN.mp4",
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/us-whisky/2026-06-14-us-whisky-dw41ch5d8w/US-WHISKY-2026-06-14-US-WHISKY-DW41CH5D8W-CLEAN.jpg",
       "notes": "AUTO (QC pass, review): https://michael-banger.github.io/ig-manager/videos/us-whisky/2026-06-14-us-whisky-dw41ch5d8w/US-WHISKY-2026-06-14-US-WHISKY-DW41CH5D8W-AUTO.mp4",
+      "nohookUrl": ""
+    },
+    {
+      "id": "37fc3402-aa15-81ed-be2c-fcd7b95786ac",
+      "name": "BBQ Summer Shop FR — 2026-06-15",
+      "account": "BBQ Summer Shop FR",
+      "date": "2026-06-15",
+      "time": "",
+      "category": "RP",
+      "status": "Pending",
+      "hook": "Le nettoyeur BBQ qui évite la galère après le repas.\nTu testes ça cet été ?",
+      "description": "Repost sourcé BBQ nettoyeur pour demain. Deux versions app: avec hook et sans hook.\nSource: https://www.instagram.com/reel/DXtaFiLE_JH/",
+      "hashtags": "#barbecue #ete #summer #famille #friends",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop-fr/2026-06-15-bbq-summer-shop-dxtafile-jh/BBQ-SUMMER-SHOP-FR-2026-06-15-BBQ-SUMMER-SHOP-DXTAFILE-JH-CLEAN.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/bbq-summer-shop-fr/2026-06-15-bbq-summer-shop-dxtafile-jh/BBQ-SUMMER-SHOP-FR-2026-06-15-BBQ-SUMMER-SHOP-DXTAFILE-JH-CLEAN.jpg",
+      "notes": "AUTO (QC pass, review): https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop-fr/2026-06-15-bbq-summer-shop-dxtafile-jh/BBQ-SUMMER-SHOP-FR-2026-06-15-BBQ-SUMMER-SHOP-DXTAFILE-JH-AUTO.mp4",
       "nohookUrl": ""
     }
   ]
