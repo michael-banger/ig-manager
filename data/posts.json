@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-14T02:12:02.183536+00:00",
-  "count": 43,
+  "generated_at": "2026-06-14T14:59:21.846681+00:00",
+  "count": 44,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -641,6 +641,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/us-whisky/2026-06-14-us-whisky-dw41ch5d8w/US-WHISKY-2026-06-14-US-WHISKY-DW41CH5D8W-CLEAN.jpg",
       "notes": "AUTO (QC pass, review): https://michael-banger.github.io/ig-manager/videos/us-whisky/2026-06-14-us-whisky-dw41ch5d8w/US-WHISKY-2026-06-14-US-WHISKY-DW41CH5D8W-AUTO.mp4",
       "nohookUrl": ""
+    },
+    {
+      "id": "37fc3402-aa15-81ce-a492-f7afb91b83b3",
+      "name": "TEA-BRAND-FR — 2026-06-14",
+      "account": "TEA-BRAND-FR",
+      "date": "2026-06-14",
+      "time": "ASAP",
+      "category": "GEN",
+      "status": "Pending",
+      "hook": "On lui disait d’arrêter la poterie",
+      "description": "Ils disaient que personne n’en voudrait… maintenant j’ai juste envie d’en refaire une.",
+      "hashtags": "#poterie #ceramique #faitmain #decointerieur",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/tea-brand-fr/poterie-iteration-2026-06-14/TEA-BRAND-FR-POTERIE-ITERATION-2026-06-14-FINAL.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/tea-brand-fr/poterie-iteration-2026-06-14/TEA-BRAND-FR-POTERIE-ITERATION-2026-06-14-FINAL.jpg",
+      "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/tea-brand-fr/poterie-iteration-2026-06-14/TEA-BRAND-FR-POTERIE-ITERATION-2026-06-14-NOHOOK.mp4",
+      "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/tea-brand-fr/poterie-iteration-2026-06-14/TEA-BRAND-FR-POTERIE-ITERATION-2026-06-14-NOHOOK.mp4"
     },
     {
       "id": "37fc3402-aa15-8133-96a9-ecf512942b6d",
