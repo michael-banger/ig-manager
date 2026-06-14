@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-14T20:19:39.239929+00:00",
-  "count": 44,
+  "generated_at": "2026-06-14T20:22:56.100454+00:00",
+  "count": 45,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -705,6 +705,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/bbq-summer-shop-fr/2026-06-15-bbq-summer-shop-dxtafile-jh/BBQ-SUMMER-SHOP-FR-2026-06-15-BBQ-SUMMER-SHOP-DXTAFILE-JH-AUTO.jpg",
       "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop-fr/2026-06-15-bbq-summer-shop-dxtafile-jh/BBQ-SUMMER-SHOP-FR-2026-06-15-BBQ-SUMMER-SHOP-DXTAFILE-JH-CLEAN.mp4",
       "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop-fr/2026-06-15-bbq-summer-shop-dxtafile-jh/BBQ-SUMMER-SHOP-FR-2026-06-15-BBQ-SUMMER-SHOP-DXTAFILE-JH-CLEAN.mp4"
+    },
+    {
+      "id": "37fc3402-aa15-8132-bd88-dee84df5634d",
+      "name": "BBQ Summer Shop FR — 2026-06-15",
+      "account": "BBQ Summer Shop FR",
+      "date": "2026-06-15",
+      "time": "Slot 2",
+      "category": "RP",
+      "status": "Pending",
+      "hook": "Le gadget BBQ qui lance la discussion.\nTu le sors à quel apéro ?",
+      "description": "Le gadget BBQ qui lance la discussion.\nTu le sors à quel apéro ?\n\n#barbecue #ete #summer #famille #friends",
+      "hashtags": "#barbecue #ete #summer #famille #friends",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop-fr/2026-06-15-bbq-summer-shop-slot2-dxldan0jmm8/BBQ-SUMMER-SHOP-FR-2026-06-15-BBQ-SUMMER-SHOP-SLOT2-DXLDAN0JMM8-AUTO.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/bbq-summer-shop-fr/2026-06-15-bbq-summer-shop-slot2-dxldan0jmm8/BBQ-SUMMER-SHOP-FR-2026-06-15-BBQ-SUMMER-SHOP-SLOT2-DXLDAN0JMM8-AUTO.jpg",
+      "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop-fr/2026-06-15-bbq-summer-shop-slot2-dxldan0jmm8/BBQ-SUMMER-SHOP-FR-2026-06-15-BBQ-SUMMER-SHOP-SLOT2-DXLDAN0JMM8-CLEAN.mp4",
+      "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/bbq-summer-shop-fr/2026-06-15-bbq-summer-shop-slot2-dxldan0jmm8/BBQ-SUMMER-SHOP-FR-2026-06-15-BBQ-SUMMER-SHOP-SLOT2-DXLDAN0JMM8-CLEAN.mp4"
     }
   ]
 }
