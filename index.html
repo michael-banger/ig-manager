@@ -317,7 +317,7 @@ const DB = {
   accounts: 'a783ba9a8ec14ff5b127cb84a17788f8',
   posts:    'c6516213feb34049950edfcc5d50b8e5',
 };
-const APP_VERSION = '2026-06-13-v19';
+const APP_VERSION = '2026-06-14-v20';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STORAGE
@@ -337,11 +337,30 @@ function isValidProxy(v) {
 // ─────────────────────────────────────────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────────────────────────────────────────
+function localDateISO(date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+const ACCOUNT_ALIASES = {
+  'TEA-BRAND-FR': 'Tea Brand FR',
+  'BBQ Summer Shop FR': 'BBQ Summer Shop',
+  'Vinyls Magnetic Frigo FR': 'Vinyls Magnetic Frigo',
+  'Ceinture Discrète Shop FR': 'Ceinture Discrète Shop',
+  'Water Gun FR': 'Water Gun FR Market',
+  'Verre Coupe du Monde FR': 'Verre Coupe du Monde',
+  'US Whisky': 'US Whisky-US',
+  'US Museum / Resin Art': 'US Museum / Resin Art-US',
+};
+const accountKey = name => ACCOUNT_ALIASES[name] || name || '';
+
 const S = {
   accounts: [],
   posts: [],
   todayCounts: {},
-  currentDate: new Date().toISOString().slice(0, 10),
+  currentDate: localDateISO(),
   activeTab: 'accounts',
   accountFilter: null,
   demo: false,
@@ -545,12 +564,16 @@ async function loadPostsForDate(date, force = false) {
     });
     posts = data.results.map(parsePost);
   }
-  posts.sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+  posts.sort((a, b) =>
+    (a.time || '').localeCompare(b.time || '') ||
+    accountKey(a.account).localeCompare(accountKey(b.account)) ||
+    (a.id || '').localeCompare(b.id || '')
+  );
   S.posts = posts;
 
   S.todayCounts = {};
   for (const p of S.posts) {
-    const k = p.account;
+    const k = accountKey(p.account);
     if (!S.todayCounts[k]) S.todayCounts[k] = { total: 0, posted: 0 };
     S.todayCounts[k].total++;
     if (p.status === 'Posted') S.todayCounts[k].posted++;
@@ -844,7 +867,7 @@ function renderAccounts() {
     <div class="accounts-grid">`;
     for (const a of toCreate) {
       html += `
-      <div class="account-card status-tocreate">
+      <div class="account-card status-tocreate" onclick="openAccountContent('${esc(a.nom)}')" title="Tap to see ${esc(a.nom)} posts">
         <div class="card-top">
           <div><div class="card-name">${esc(a.nom)}</div><div class="card-product">${esc(a.produit)}</div></div>
           <span class="status-pill pill-tocreate">To Create</span>
@@ -869,7 +892,11 @@ function categoryEmoji(cat) {
 function renderPostCard(p) {
   const sClass  = p.status === 'Validated' ? 'validated' : p.status === 'Posted' ? 'posted' : 'pending';
   const pClass  = p.status === 'Validated' ? 'psp-validated' : p.status === 'Posted' ? 'psp-posted' : 'psp-pending';
-  const descFull = (p.description || '') + (p.hashtags ? '\n' + p.hashtags : '');
+  const description = (p.description || '').trim();
+  const hashtags = (p.hashtags || '').trim();
+  const descFull = hashtags && !description.includes(hashtags)
+    ? (description ? description + '\n\n' + hashtags : hashtags)
+    : description;
 
   // Store text in _clips map — avoids all HTML-attribute quote-escaping issues
   // (JSON.stringify produces double-quoted strings that break onclick="" attributes)
@@ -933,7 +960,7 @@ function renderContent() {
 
   const d = formatDateDisplay(S.currentDate);
   const visiblePosts = S.accountFilter
-    ? S.posts.filter(p => p.account === S.accountFilter)
+    ? S.posts.filter(p => accountKey(p.account) === accountKey(S.accountFilter))
     : S.posts;
 
   const total   = visiblePosts.length;
@@ -1238,7 +1265,7 @@ async function changeDate(delta) {
   S.currentDate = d.toISOString().slice(0, 10);
   document.getElementById('tab-content').innerHTML = '<div class="loading-state"><span class="spinner"></span>Loading…</div>';
   try {
-    await loadPostsForDate(S.currentDate);
+    await loadPostsForDate(S.currentDate, true);
     renderContent();
   } catch (e) {
     document.getElementById('tab-content').innerHTML = `<div class="error-state">${esc(e.message)}</div>`;
@@ -1283,7 +1310,7 @@ async function refreshAll() {
   await checkAppUpdate(false);
   try {
     loadAccounts();
-    await loadPostsForDate(S.currentDate);
+    await loadPostsForDate(S.currentDate, true);
     renderAccounts();
     if (S.activeTab === 'content') renderContent();
     toast('Up to date ✓');
