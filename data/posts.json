@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-15T02:03:06.757990+00:00",
-  "count": 46,
+  "generated_at": "2026-06-19T21:42:09.898718+00:00",
+  "count": 47,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -737,6 +737,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/water-gun-fr/2026-06-16-water-gun-fr-dxftcodigrt/WATER-GUN-FR-2026-06-16-WATER-GUN-FR-DXFTCODIGRT-AUTO.jpg",
       "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/water-gun-fr/2026-06-16-water-gun-fr-dxftcodigrt/WATER-GUN-FR-2026-06-16-WATER-GUN-FR-DXFTCODIGRT-CLEAN.mp4",
       "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/water-gun-fr/2026-06-16-water-gun-fr-dxftcodigrt/WATER-GUN-FR-2026-06-16-WATER-GUN-FR-DXFTCODIGRT-CLEAN.mp4"
+    },
+    {
+      "id": "384c3402-aa15-8133-93c8-fddaca9eda35",
+      "name": "EAR-CLEANER-FR — 2026-06-20",
+      "account": "EAR-CLEANER-FR",
+      "date": "2026-06-20",
+      "time": "",
+      "category": "ai-original",
+      "status": "Pending",
+      "hook": "Tu nettoies tes oreilles comme ça ? 👂",
+      "description": "Démo réaliste en salle de bain, format organique.\n\n#oreilles #routine #bienetre #astuce #tiktokmademebuyit",
+      "hashtags": "#oreilles #routine #bienetre #astuce #tiktokmademebuyit",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/ear-cleaner-fr/ear-cleaner-post-1/EAR-CLEANER-FR-EAR-CLEANER-POST-1-FINAL.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/ear-cleaner-fr/ear-cleaner-post-1/EAR-CLEANER-FR-EAR-CLEANER-POST-1-FINAL.jpg",
+      "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/ear-cleaner-fr/ear-cleaner-post-1/EAR-CLEANER-FR-EAR-CLEANER-POST-1-NOHOOK.mp4",
+      "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/ear-cleaner-fr/ear-cleaner-post-1/EAR-CLEANER-FR-EAR-CLEANER-POST-1-NOHOOK.mp4"
     }
   ]
 }
