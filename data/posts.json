@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-19T21:42:09.898718+00:00",
-  "count": 47,
+  "generated_at": "2026-06-20T00:05:20.252553+00:00",
+  "count": 48,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -753,6 +753,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/ear-cleaner-fr/ear-cleaner-post-1/EAR-CLEANER-FR-EAR-CLEANER-POST-1-FINAL.jpg",
       "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/ear-cleaner-fr/ear-cleaner-post-1/EAR-CLEANER-FR-EAR-CLEANER-POST-1-NOHOOK.mp4",
       "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/ear-cleaner-fr/ear-cleaner-post-1/EAR-CLEANER-FR-EAR-CLEANER-POST-1-NOHOOK.mp4"
+    },
+    {
+      "id": "385c3402-aa15-81be-8045-c6ce05b96ebb",
+      "name": "US Museum / Resin Art — 2026-06-21",
+      "account": "US Museum / Resin Art",
+      "date": "2026-06-21",
+      "time": "",
+      "category": "RP",
+      "status": "Pending",
+      "hook": "",
+      "description": "Resin art repost candidate\n\n#resinart #handmade #art #decor #artist",
+      "hashtags": "#resinart #handmade #art #decor #artist",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/us-museum-resin-art/2026-06-21-us-museum-dyakbr0rfuw/US-MUSEUM-RESIN-ART-2026-06-21-US-MUSEUM-DYAKBR0RFUW-CLEAN.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/us-museum-resin-art/2026-06-21-us-museum-dyakbr0rfuw/US-MUSEUM-RESIN-ART-2026-06-21-US-MUSEUM-DYAKBR0RFUW-CLEAN.jpg",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     }
   ]
 }
