@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-06-20T02:06:03.205143+00:00",
-  "count": 48,
+  "generated_at": "2026-06-23T00:06:46.854303+00:00",
+  "count": 49,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -769,6 +769,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/us-museum-resin-art/2026-06-21-us-museum-dyakbr0rfuw/US-MUSEUM-RESIN-ART-2026-06-21-US-MUSEUM-DYAKBR0RFUW-AUTO.jpg",
       "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/us-museum-resin-art/2026-06-21-us-museum-dyakbr0rfuw/US-MUSEUM-RESIN-ART-2026-06-21-US-MUSEUM-DYAKBR0RFUW-CLEAN.mp4",
       "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/us-museum-resin-art/2026-06-21-us-museum-dyakbr0rfuw/US-MUSEUM-RESIN-ART-2026-06-21-US-MUSEUM-DYAKBR0RFUW-CLEAN.mp4"
+    },
+    {
+      "id": "388c3402-aa15-81c5-98f5-d53371e3fde3",
+      "name": "US Museum / Resin Art — 2026-06-24",
+      "account": "US Museum / Resin Art",
+      "date": "2026-06-24",
+      "time": "",
+      "category": "RP",
+      "status": "Pending",
+      "hook": "",
+      "description": "NBA resin lamp repost candidate from @ellisona.arts. Source tracked in registry.\n\n#resinart #nba #lamp #collector #roomdecor",
+      "hashtags": "#resinart #nba #lamp #collector #roomdecor",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/us-museum-resin-art/2026-06-24-us-museum-dyfczbjrtzr/US-MUSEUM-RESIN-ART-2026-06-24-US-MUSEUM-DYFCZBJRTZR-CLEAN.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/us-museum-resin-art/2026-06-24-us-museum-dyfczbjrtzr/US-MUSEUM-RESIN-ART-2026-06-24-US-MUSEUM-DYFCZBJRTZR-CLEAN.jpg",
+      "notes": "Manual-pack: pose le hook au CapCut.",
+      "nohookUrl": ""
     }
   ]
 }
