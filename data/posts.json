@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-10T10:12:27.829570+00:00",
-  "count": 80,
+  "generated_at": "2026-08-10T10:12:40.559122+00:00",
+  "count": 81,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -1233,6 +1233,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/spiraledazur/2026-08-10-spiraledazur-post1-morning/SPIRALEDAZUR-2026-08-10-SPIRALEDAZUR-POST1-MORNING-FINAL.jpg",
       "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/spiraledazur/2026-08-10-spiraledazur-post1-morning/SPIRALEDAZUR-2026-08-10-SPIRALEDAZUR-POST1-MORNING-NOHOOK.mp4",
       "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/spiraledazur/2026-08-10-spiraledazur-post1-morning/SPIRALEDAZUR-2026-08-10-SPIRALEDAZUR-POST1-MORNING-NOHOOK.mp4"
+    },
+    {
+      "id": "3b8c3402-aa15-8185-990f-e4b9ea9f65f8",
+      "name": "@onsimplifie — 2026-08-10",
+      "account": "@onsimplifie",
+      "date": "2026-08-10",
+      "time": "09:00",
+      "category": "GEN",
+      "status": "Pending",
+      "hook": "Montrez surtout pas ça\naux parents de chiens",
+      "description": "Commente 'TOUTOU' et je t'envoie le lien",
+      "hashtags": "#chien #toilettagechien #astucechien #proprietairedechien",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/onsimplifie/2026-08-10-onsimplifie-post1-morning/ONSIMPLIFIE-2026-08-10-ONSIMPLIFIE-POST1-MORNING-FINAL.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/onsimplifie/2026-08-10-onsimplifie-post1-morning/ONSIMPLIFIE-2026-08-10-ONSIMPLIFIE-POST1-MORNING-FINAL.jpg",
+      "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/onsimplifie/2026-08-10-onsimplifie-post1-morning/ONSIMPLIFIE-2026-08-10-ONSIMPLIFIE-POST1-MORNING-NOHOOK.mp4",
+      "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/onsimplifie/2026-08-10-onsimplifie-post1-morning/ONSIMPLIFIE-2026-08-10-ONSIMPLIFIE-POST1-MORNING-NOHOOK.mp4"
     },
     {
       "id": "3b8c3402-aa15-81cf-8f9e-ef8ef3fe78ad",
