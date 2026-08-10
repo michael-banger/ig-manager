@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-10T10:13:06.436477+00:00",
-  "count": 83,
+  "generated_at": "2026-08-10T10:13:18.159936+00:00",
+  "count": 84,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -1249,6 +1249,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/onsimplifie/2026-08-10-onsimplifie-post1-morning/ONSIMPLIFIE-2026-08-10-ONSIMPLIFIE-POST1-MORNING-FINAL.jpg",
       "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/onsimplifie/2026-08-10-onsimplifie-post1-morning/ONSIMPLIFIE-2026-08-10-ONSIMPLIFIE-POST1-MORNING-NOHOOK.mp4",
       "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/onsimplifie/2026-08-10-onsimplifie-post1-morning/ONSIMPLIFIE-2026-08-10-ONSIMPLIFIE-POST1-MORNING-NOHOOK.mp4"
+    },
+    {
+      "id": "3b8c3402-aa15-81c2-b7d8-fd1597bed1ab",
+      "name": "@myteaovo — 2026-08-10",
+      "account": "@myteaovo",
+      "date": "2026-08-10",
+      "time": "09:00",
+      "category": "GEN",
+      "status": "Pending",
+      "hook": "Le cadeau parfait\npour celle qui aime les plantes",
+      "description": "Commente 'POT' et je t'envoie le lien",
+      "hashtags": "#potdeplante #deco #plantes #ideecadeau",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/myteaovo/2026-08-10-myteaovo-post1-morning/MYTEAOVO-2026-08-10-MYTEAOVO-POST1-MORNING-FINAL.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/myteaovo/2026-08-10-myteaovo-post1-morning/MYTEAOVO-2026-08-10-MYTEAOVO-POST1-MORNING-FINAL.jpg",
+      "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/myteaovo/2026-08-10-myteaovo-post1-morning/MYTEAOVO-2026-08-10-MYTEAOVO-POST1-MORNING-NOHOOK.mp4",
+      "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/myteaovo/2026-08-10-myteaovo-post1-morning/MYTEAOVO-2026-08-10-MYTEAOVO-POST1-MORNING-NOHOOK.mp4"
     },
     {
       "id": "3b8c3402-aa15-81cf-8f9e-ef8ef3fe78ad",
