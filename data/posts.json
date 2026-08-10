@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-10T10:11:48.542226+00:00",
-  "count": 77,
+  "generated_at": "2026-08-10T10:12:01.266951+00:00",
+  "count": 78,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -1233,6 +1233,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/spiraledazur/2026-08-10-spiraledazur-post1-morning/SPIRALEDAZUR-2026-08-10-SPIRALEDAZUR-POST1-MORNING-FINAL.jpg",
       "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/spiraledazur/2026-08-10-spiraledazur-post1-morning/SPIRALEDAZUR-2026-08-10-SPIRALEDAZUR-POST1-MORNING-NOHOOK.mp4",
       "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/spiraledazur/2026-08-10-spiraledazur-post1-morning/SPIRALEDAZUR-2026-08-10-SPIRALEDAZUR-POST1-MORNING-NOHOOK.mp4"
+    },
+    {
+      "id": "3b8c3402-aa15-81cf-8f9e-ef8ef3fe78ad",
+      "name": "@troputile — 2026-08-10",
+      "account": "@troputile",
+      "date": "2026-08-10",
+      "time": "09:00",
+      "category": "GEN",
+      "status": "Pending",
+      "hook": "Fais JAMAIS voir ça\nà ta pote qui boit",
+      "description": "Commente 'SOIF' et je t'envoie le lien",
+      "hashtags": "#sacaboisson #terrasseparis #astuce #soiree",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/troputile/2026-08-10-troputile-post1-morning/TROPUTILE-2026-08-10-TROPUTILE-POST1-MORNING-FINAL.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/troputile/2026-08-10-troputile-post1-morning/TROPUTILE-2026-08-10-TROPUTILE-POST1-MORNING-FINAL.jpg",
+      "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/troputile/2026-08-10-troputile-post1-morning/TROPUTILE-2026-08-10-TROPUTILE-POST1-MORNING-NOHOOK.mp4",
+      "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/troputile/2026-08-10-troputile-post1-morning/TROPUTILE-2026-08-10-TROPUTILE-POST1-MORNING-NOHOOK.mp4"
     }
   ]
 }
