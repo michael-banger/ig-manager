@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-10T10:12:01.266951+00:00",
-  "count": 78,
+  "generated_at": "2026-08-10T10:12:13.851972+00:00",
+  "count": 79,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -1249,6 +1249,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/troputile/2026-08-10-troputile-post1-morning/TROPUTILE-2026-08-10-TROPUTILE-POST1-MORNING-FINAL.jpg",
       "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/troputile/2026-08-10-troputile-post1-morning/TROPUTILE-2026-08-10-TROPUTILE-POST1-MORNING-NOHOOK.mp4",
       "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/troputile/2026-08-10-troputile-post1-morning/TROPUTILE-2026-08-10-TROPUTILE-POST1-MORNING-NOHOOK.mp4"
+    },
+    {
+      "id": "3b8c3402-aa15-8167-92ff-da8bd19c48a3",
+      "name": "@troputile — 2026-08-10",
+      "account": "@troputile",
+      "date": "2026-08-10",
+      "time": "12:30",
+      "category": "GEN",
+      "status": "Pending",
+      "hook": "Ma pote a compris\ntrop tard ce que c'était",
+      "description": "Commente 'SOIF' pour le lien",
+      "hashtags": "#sacaboisson #plage #riviera #astuceete",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/troputile/2026-08-10-troputile-post2-midi/TROPUTILE-2026-08-10-TROPUTILE-POST2-MIDI-FINAL.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/troputile/2026-08-10-troputile-post2-midi/TROPUTILE-2026-08-10-TROPUTILE-POST2-MIDI-FINAL.jpg",
+      "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/troputile/2026-08-10-troputile-post2-midi/TROPUTILE-2026-08-10-TROPUTILE-POST2-MIDI-NOHOOK.mp4",
+      "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/troputile/2026-08-10-troputile-post2-midi/TROPUTILE-2026-08-10-TROPUTILE-POST2-MIDI-NOHOOK.mp4"
     }
   ]
 }
