@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-10T10:12:13.851972+00:00",
-  "count": 79,
+  "generated_at": "2026-08-10T10:12:27.829570+00:00",
+  "count": 80,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -1265,6 +1265,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/troputile/2026-08-10-troputile-post2-midi/TROPUTILE-2026-08-10-TROPUTILE-POST2-MIDI-FINAL.jpg",
       "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/troputile/2026-08-10-troputile-post2-midi/TROPUTILE-2026-08-10-TROPUTILE-POST2-MIDI-NOHOOK.mp4",
       "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/troputile/2026-08-10-troputile-post2-midi/TROPUTILE-2026-08-10-TROPUTILE-POST2-MIDI-NOHOOK.mp4"
+    },
+    {
+      "id": "3b8c3402-aa15-81c0-ba83-f39b33c9bf0b",
+      "name": "@troputile — 2026-08-10",
+      "account": "@troputile",
+      "date": "2026-08-10",
+      "time": "20:00",
+      "category": "GEN",
+      "status": "Pending",
+      "hook": "Identifie la pote\nqui doit PAS voir ce sac",
+      "description": "Identifie-la, elle va comprendre",
+      "hashtags": "#festival #sacaboisson #entrepotes #solidays",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/troputile/2026-08-10-troputile-post3-evening/TROPUTILE-2026-08-10-TROPUTILE-POST3-EVENING-FINAL.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/troputile/2026-08-10-troputile-post3-evening/TROPUTILE-2026-08-10-TROPUTILE-POST3-EVENING-FINAL.jpg",
+      "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/troputile/2026-08-10-troputile-post3-evening/TROPUTILE-2026-08-10-TROPUTILE-POST3-EVENING-NOHOOK.mp4",
+      "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/troputile/2026-08-10-troputile-post3-evening/TROPUTILE-2026-08-10-TROPUTILE-POST3-EVENING-NOHOOK.mp4"
     }
   ]
 }
