@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-17T02:07:40.968904+00:00",
-  "count": 86,
+  "generated_at": "2026-08-17T02:08:15.068951+00:00",
+  "count": 87,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -1377,6 +1377,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/spiraledazur/2026-08-17-spiraledazur-post1-morning-rm/SPIRALEDAZUR-2026-08-17-SPIRALEDAZUR-POST1-MORNING-RM-FINAL.jpg",
       "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/spiraledazur/2026-08-17-spiraledazur-post1-morning-rm/SPIRALEDAZUR-2026-08-17-SPIRALEDAZUR-POST1-MORNING-RM-NOHOOK.mp4",
       "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/spiraledazur/2026-08-17-spiraledazur-post1-morning-rm/SPIRALEDAZUR-2026-08-17-SPIRALEDAZUR-POST1-MORNING-RM-NOHOOK.mp4"
+    },
+    {
+      "id": "3bfc3402-aa15-8187-b540-d666e4cd8d18",
+      "name": "carblazz — 2026-08-17",
+      "account": "carblazz",
+      "date": "2026-08-17",
+      "time": "morning",
+      "category": "GEN",
+      "status": "Pending",
+      "hook": "Car guys need this clock",
+      "description": "Comment \"CLOCK\" for the link. Built for garage walls, not dashboards.",
+      "hashtags": "#carguys #garagedecor #wallclock #carcommunity",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/carblazz/2026-08-17-carblazz-post1-morning/CARBLAZZ-2026-08-17-CARBLAZZ-POST1-MORNING-FINAL.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/carblazz/2026-08-17-carblazz-post1-morning/CARBLAZZ-2026-08-17-CARBLAZZ-POST1-MORNING-FINAL.jpg",
+      "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/carblazz/2026-08-17-carblazz-post1-morning/CARBLAZZ-2026-08-17-CARBLAZZ-POST1-MORNING-NOHOOK.mp4",
+      "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/carblazz/2026-08-17-carblazz-post1-morning/CARBLAZZ-2026-08-17-CARBLAZZ-POST1-MORNING-NOHOOK.mp4"
     }
   ]
 }
