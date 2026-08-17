@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-17T02:09:04.362655+00:00",
-  "count": 91,
+  "generated_at": "2026-08-17T02:34:42.320880+00:00",
+  "count": 92,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -1393,6 +1393,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/spiraledazur/2026-08-17-spiraledazur-post1-morning-rm/SPIRALEDAZUR-2026-08-17-SPIRALEDAZUR-POST1-MORNING-RM-FINAL.jpg",
       "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/spiraledazur/2026-08-17-spiraledazur-post1-morning-rm/SPIRALEDAZUR-2026-08-17-SPIRALEDAZUR-POST1-MORNING-RM-NOHOOK.mp4",
       "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/spiraledazur/2026-08-17-spiraledazur-post1-morning-rm/SPIRALEDAZUR-2026-08-17-SPIRALEDAZUR-POST1-MORNING-RM-NOHOOK.mp4"
+    },
+    {
+      "id": "3bfc3402-aa15-8165-b8f7-f1950252a4d2",
+      "name": "spiraledazur — 2026-08-17",
+      "account": "spiraledazur",
+      "date": "2026-08-17",
+      "time": "morning",
+      "category": "GEN",
+      "status": "Pending",
+      "hook": "Le sac coquillage est ici",
+      "description": "Commentez « Soleil » pour recevoir le lien. Le sac coquillage qu’on cherche en rayon cet été.",
+      "hashtags": "#sacete #saccoquillage #modefrancaise #sacdujour",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/spiraledazur/2026-08-17-spiraledazur-shell-post1-morning/SPIRALEDAZUR-2026-08-17-SPIRALEDAZUR-SHELL-POST1-MORNING-FINAL.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/spiraledazur/2026-08-17-spiraledazur-shell-post1-morning/SPIRALEDAZUR-2026-08-17-SPIRALEDAZUR-SHELL-POST1-MORNING-FINAL.jpg",
+      "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/spiraledazur/2026-08-17-spiraledazur-shell-post1-morning/SPIRALEDAZUR-2026-08-17-SPIRALEDAZUR-SHELL-POST1-MORNING-NOHOOK.mp4",
+      "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/spiraledazur/2026-08-17-spiraledazur-shell-post1-morning/SPIRALEDAZUR-2026-08-17-SPIRALEDAZUR-SHELL-POST1-MORNING-NOHOOK.mp4"
     },
     {
       "id": "3bfc3402-aa15-8187-b540-d666e4cd8d18",
