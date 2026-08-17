@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-17T02:08:27.725059+00:00",
-  "count": 88,
+  "generated_at": "2026-08-17T02:08:41.001193+00:00",
+  "count": 89,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -1409,6 +1409,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/carblazz/2026-08-17-carblazz-post1-morning/CARBLAZZ-2026-08-17-CARBLAZZ-POST1-MORNING-FINAL.jpg",
       "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/carblazz/2026-08-17-carblazz-post1-morning/CARBLAZZ-2026-08-17-CARBLAZZ-POST1-MORNING-NOHOOK.mp4",
       "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/carblazz/2026-08-17-carblazz-post1-morning/CARBLAZZ-2026-08-17-CARBLAZZ-POST1-MORNING-NOHOOK.mp4"
+    },
+    {
+      "id": "3bfc3402-aa15-81a7-844c-cd83677a1a51",
+      "name": "carblazz — 2026-08-18",
+      "account": "carblazz",
+      "date": "2026-08-18",
+      "time": "morning",
+      "category": "GEN",
+      "status": "Pending",
+      "hook": "Race night needs this clock",
+      "description": "Comment \"CLOCK\" for the link. Built for the wall behind every race-night couch.",
+      "hashtags": "#f1decor #racingfans #wallclock #carguys",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/carblazz/2026-08-18-carblazz-post1-morning/CARBLAZZ-2026-08-18-CARBLAZZ-POST1-MORNING-FINAL.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/carblazz/2026-08-18-carblazz-post1-morning/CARBLAZZ-2026-08-18-CARBLAZZ-POST1-MORNING-FINAL.jpg",
+      "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/carblazz/2026-08-18-carblazz-post1-morning/CARBLAZZ-2026-08-18-CARBLAZZ-POST1-MORNING-NOHOOK.mp4",
+      "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/carblazz/2026-08-18-carblazz-post1-morning/CARBLAZZ-2026-08-18-CARBLAZZ-POST1-MORNING-NOHOOK.mp4"
     }
   ]
 }
