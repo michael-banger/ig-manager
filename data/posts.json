@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-17T02:08:41.001193+00:00",
-  "count": 89,
+  "generated_at": "2026-08-17T02:08:52.481074+00:00",
+  "count": 90,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -1409,6 +1409,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/carblazz/2026-08-17-carblazz-post1-morning/CARBLAZZ-2026-08-17-CARBLAZZ-POST1-MORNING-FINAL.jpg",
       "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/carblazz/2026-08-17-carblazz-post1-morning/CARBLAZZ-2026-08-17-CARBLAZZ-POST1-MORNING-NOHOOK.mp4",
       "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/carblazz/2026-08-17-carblazz-post1-morning/CARBLAZZ-2026-08-17-CARBLAZZ-POST1-MORNING-NOHOOK.mp4"
+    },
+    {
+      "id": "3bfc3402-aa15-81e1-b84b-f81468f59ec9",
+      "name": "carblazz — 2026-08-18",
+      "account": "carblazz",
+      "date": "2026-08-18",
+      "time": "midi",
+      "category": "GEN",
+      "status": "Pending",
+      "hook": "Desk wall clock",
+      "description": "Comment \"CLOCK\" for the link. A subtle car detail for the home office wall.",
+      "hashtags": "#homeoffice #carenthusiast #desksetup #wallclock",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/carblazz/2026-08-18-carblazz-post2-midi/CARBLAZZ-2026-08-18-CARBLAZZ-POST2-MIDI-FINAL.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/carblazz/2026-08-18-carblazz-post2-midi/CARBLAZZ-2026-08-18-CARBLAZZ-POST2-MIDI-FINAL.jpg",
+      "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/carblazz/2026-08-18-carblazz-post2-midi/CARBLAZZ-2026-08-18-CARBLAZZ-POST2-MIDI-NOHOOK.mp4",
+      "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/carblazz/2026-08-18-carblazz-post2-midi/CARBLAZZ-2026-08-18-CARBLAZZ-POST2-MIDI-NOHOOK.mp4"
     },
     {
       "id": "3bfc3402-aa15-81a7-844c-cd83677a1a51",
