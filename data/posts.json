@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-20T10:38:28.974525+00:00",
-  "count": 95,
+  "generated_at": "2026-08-20T10:38:43.011179+00:00",
+  "count": 96,
   "posts": [
     {
       "id": "36bc3402-aa15-8139-86bc-ff1a62f68477",
@@ -1521,6 +1521,22 @@
       "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/carblazz/2026-08-20-carblazz-post1-morning/CARBLAZZ-2026-08-20-CARBLAZZ-POST1-MORNING-FINAL.jpg",
       "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/carblazz/2026-08-20-carblazz-post1-morning/CARBLAZZ-2026-08-20-CARBLAZZ-POST1-MORNING-NOHOOK.mp4",
       "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/carblazz/2026-08-20-carblazz-post1-morning/CARBLAZZ-2026-08-20-CARBLAZZ-POST1-MORNING-NOHOOK.mp4"
+    },
+    {
+      "id": "3c2c3402-aa15-81e1-8752-f4315062900e",
+      "name": "@spiraledazur — 2026-08-20",
+      "account": "@spiraledazur",
+      "date": "2026-08-20",
+      "time": "09:00",
+      "category": "GEN",
+      "status": "Pending",
+      "hook": "Arrête, personne\nva acheter ça",
+      "description": "Lien en bio — le sac coquillage est à 39,99 €.",
+      "hashtags": "#spiraledazur #saccrochet #parisstyle",
+      "videoUrl": "https://michael-banger.github.io/ig-manager/videos/spiraledazur/2026-08-20-spiraledazur-post1-morning/SPIRALEDAZUR-2026-08-20-SPIRALEDAZUR-POST1-MORNING-FINAL.mp4",
+      "thumbnailUrl": "https://michael-banger.github.io/ig-manager/thumbs/spiraledazur/2026-08-20-spiraledazur-post1-morning/SPIRALEDAZUR-2026-08-20-SPIRALEDAZUR-POST1-MORNING-FINAL.jpg",
+      "notes": "SANS-HOOK: https://michael-banger.github.io/ig-manager/videos/spiraledazur/2026-08-20-spiraledazur-post1-morning/SPIRALEDAZUR-2026-08-20-SPIRALEDAZUR-POST1-MORNING-NOHOOK.mp4",
+      "nohookUrl": "https://michael-banger.github.io/ig-manager/videos/spiraledazur/2026-08-20-spiraledazur-post1-morning/SPIRALEDAZUR-2026-08-20-SPIRALEDAZUR-POST1-MORNING-NOHOOK.mp4"
     }
   ]
 }
